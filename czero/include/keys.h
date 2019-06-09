@@ -7,6 +7,11 @@
 
 #include "constant.h"
 
+extern void zero_seed2sk(
+    const unsigned char seed[32],
+    unsigned char sk[ZERO_TK_WIDTH]
+);
+
 extern void zero_seed2tk(
     const unsigned char seed[32],
     unsigned char tk[ZERO_TK_WIDTH]

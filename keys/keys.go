@@ -49,6 +49,14 @@ func Sk2PK(sk *Uint512) (addr Uint512) {
 	return
 }
 
+func Seed2Sk(seed *Uint256) (sk Uint512) {
+	C.zero_seed2sk(
+		(*C.uchar)(unsafe.Pointer(&seed[0])),
+		(*C.uchar)(unsafe.Pointer(&sk[0])),
+	)
+	return
+}
+
 func Seed2Tk(seed *Uint256) (tk Uint512) {
 	C.zero_seed2tk(
 		(*C.uchar)(unsafe.Pointer(&seed[0])),
