@@ -40,6 +40,12 @@ func TestCpt(t *testing.T) {
 	}
 }
 
+func TestSk(t *testing.T) {
+	seed := cpt.Random()
+	sk := keys.Seed2Sk(&seed)
+	fmt.Println(sk)
+}
+
 func TestPKr(t *testing.T) {
 	seed := cpt.Random()
 	pk := keys.Seed2Addr(&seed)
