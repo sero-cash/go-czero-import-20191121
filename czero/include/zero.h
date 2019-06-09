@@ -25,6 +25,8 @@ extern "C" {
 
 extern void zero_init(const char* account_dir,const unsigned char nettype);
 
+extern void zero_init_inouts();
+
 extern void zero_init_no_circuit();
 
 extern void zero_log_bytes(const unsigned char* bytes,int len);
@@ -38,7 +40,7 @@ extern void zero_fee_str(char *p);
 
 extern const char* zero_base58_enc(const unsigned char* p,int len);
 
-extern char zero_base58_dec(const char* p,unsigned char* out,int len);
+extern int zero_base58_dec(const char* p,unsigned char* out,int len);
 
 
 extern void zero_merkle_combine(
