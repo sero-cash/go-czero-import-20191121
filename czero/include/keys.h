@@ -25,6 +25,10 @@ extern void zero_seed2pk(
 
 extern void zero_sk2pk(const unsigned char sk[ZERO_PK_WIDTH], unsigned char pk[ZERO_PK_WIDTH]);
 
+extern void zero_sk2tk(const unsigned char sk[ZERO_PK_WIDTH], unsigned char tk[ZERO_TK_WIDTH]);
+
+extern void zero_tk2pk(const unsigned char tk[ZERO_TK_WIDTH], unsigned char pk[ZERO_PK_WIDTH]);
+
 extern void zero_pk2pkr(
     const unsigned char pk[ZERO_PK_WIDTH],
     const unsigned char rnd[32],

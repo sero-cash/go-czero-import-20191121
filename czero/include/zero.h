@@ -38,7 +38,7 @@ extern void zero_fee_str(char *p);
 
 extern const char* zero_base58_enc(const unsigned char* p,int len);
 
-extern char zero_base58_dec(const char* p,unsigned char* out,int len);
+extern int zero_base58_dec(const char* p,unsigned char* out,int len);
 
 
 extern void zero_merkle_combine(

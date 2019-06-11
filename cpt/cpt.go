@@ -119,7 +119,7 @@ func Base58Decode(str *string, bytes []byte) (e error) {
 		(*C.uchar)(unsafe.Pointer(&bytes[0])),
 		C.int(len(bytes)),
 	)
-	if ret == C.char(0) {
+	if ret <= len(bytes) {
 		return
 	} else {
 		e = errors.New("base58 can not decode string")
