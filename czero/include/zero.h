@@ -25,6 +25,8 @@ extern "C" {
 
 extern void zero_init(const char* account_dir,const unsigned char nettype);
 
+extern void zero_init_inouts();
+
 extern void zero_init_no_circuit();
 
 extern void zero_log_bytes(const unsigned char* bytes,int len);

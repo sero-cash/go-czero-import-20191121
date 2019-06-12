@@ -74,6 +74,15 @@ func ZeroInit_NoCircuit() error {
 	return nil
 }
 
+func ZeroInit_OnlyInOuts() error {
+	go func() {
+		C.zero_init_inouts()
+		init_chan <- true
+	}()
+	<-init_chan
+	return nil
+}
+
 func Random() (out keys.Uint256) {
 	C.zero_random32(
 		(*C.uchar)(unsafe.Pointer(&out[0])),

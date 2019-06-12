@@ -75,5 +75,4 @@ extern char zero_pk_valid(
 );
 
 
-
 #endif //LIBCZERO_INCLUDE_KEYS_H
