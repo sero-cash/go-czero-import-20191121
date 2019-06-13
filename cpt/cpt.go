@@ -292,7 +292,7 @@ type OutputDesc struct {
 
 func GenOutputProof(desc *OutputDesc) (e error) {
 	var is_v1 int
-	if desc.Height >= seroparam.SIP2 {
+	if desc.Height >= seroparam.SIP2() {
 		is_v1 = 1
 	} else {
 		is_v1 = 0
@@ -595,7 +595,7 @@ type OutputVerifyDesc struct {
 
 func VerifyOutput(desc *OutputVerifyDesc) (e error) {
 	var is_v1 int
-	if desc.Height >= seroparam.SIP2 {
+	if desc.Height >= seroparam.SIP2() {
 		is_v1 = 1
 	} else {
 		is_v1 = 0
@@ -807,12 +807,12 @@ func VerifyInputS(desc *VerifyInputSDesc) (e error) {
 
 func Miner_Hash_0(in []byte, num uint64) []byte {
 	var bs [64]byte
-	if num >= seroparam.VP1 {
+	if num >= seroparam.VP1() {
 		C.zero_hash_2_enter(
 			(*C.uchar)(unsafe.Pointer(&in[0])),
 			(*C.uchar)(unsafe.Pointer(&bs[0])),
 		)
-	} else if num >= seroparam.SIP1 {
+	} else if num >= seroparam.SIP1() {
 		C.zero_hash_1_enter(
 			(*C.uchar)(unsafe.Pointer(&in[0])),
 			(*C.uchar)(unsafe.Pointer(&bs[0])),
@@ -828,12 +828,12 @@ func Miner_Hash_0(in []byte, num uint64) []byte {
 
 func Miner_Hash_1(in []byte, num uint64) []byte {
 	var bs [32]byte
-	if num >= seroparam.VP1 {
+	if num >= seroparam.VP1() {
 		C.zero_hash_2_leave(
 			(*C.uchar)(unsafe.Pointer(&in[0])),
 			(*C.uchar)(unsafe.Pointer(&bs[0])),
 		)
-	} else if num >= seroparam.SIP1 {
+	} else if num >= seroparam.SIP1() {
 		C.zero_hash_1_leave(
 			(*C.uchar)(unsafe.Pointer(&in[0])),
 			(*C.uchar)(unsafe.Pointer(&bs[0])),
