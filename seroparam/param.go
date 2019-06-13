@@ -18,7 +18,7 @@ func SIP2() uint64 {
 
 func SIP3() uint64 {
 	if is_dev {
-		return 0
+		return uint64(940410)
 	} else {
 		return uint64(940410)
 	}
