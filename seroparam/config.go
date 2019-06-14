@@ -25,10 +25,16 @@ func Is_Dev() bool {
 	return is_dev
 }
 
+var balanceDelay = uint64(12)
+
+func InitBalanceDelay(delay uint64) {
+	balanceDelay = delay
+}
+
 func DefaultDelayNum() uint64 {
 	if is_dev {
 		return 0
 	} else {
-		return 12
+		return balanceDelay
 	}
 }
