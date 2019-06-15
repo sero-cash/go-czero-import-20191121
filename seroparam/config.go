@@ -38,3 +38,13 @@ func DefaultConfirmedBlock() uint64 {
 		return confirmedBlock
 	}
 }
+
+var is_exchange = false
+
+func InitExchange(b bool) {
+	is_exchange = b
+}
+
+func IsExchange() bool {
+	return is_exchange
+}
