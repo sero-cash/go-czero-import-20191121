@@ -1,10 +1,45 @@
 package seroparam
 
-const SIP1 = 130000 //for miner rewards
+func SIP1() uint64 {
+	if is_dev {
+		return 0
+	} else {
+		return uint64(130000) //for miner rewards
+	}
+}
 
-const SIP2 = 606006 //for flight wallet
-//const SIP2 = 0 //for test
+func SIP2() uint64 {
+	if is_dev {
+		return 0
+	} else {
+		return uint64(606006)
+	}
+}
 
-const SIP3 = 940410 //for test net
+func SIP3() uint64 {
+	if is_dev {
+		return uint64(940410)
+	} else {
+		return uint64(940410)
+	}
+}
 
-const VP1 = 829000 //for gpu anti
+func VP1() uint64 {
+	if is_dev {
+		return 0
+	} else {
+		return uint64(829000)
+	}
+}
+
+func VP0() uint64 {
+	if is_dev {
+		return 0
+	} else {
+		return uint64(788888)
+	}
+}
+
+const MAX_O_INS_LENGTH = int(2500)
+
+const MAX_TX_OUT_COUNT_LENGTH = int(256)

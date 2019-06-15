@@ -7,6 +7,11 @@
 
 #include "constant.h"
 
+extern void zero_seed2sk(
+    const unsigned char seed[32],
+    unsigned char sk[ZERO_TK_WIDTH]
+);
+
 extern void zero_seed2tk(
     const unsigned char seed[32],
     unsigned char tk[ZERO_TK_WIDTH]
@@ -19,6 +24,10 @@ extern void zero_seed2pk(
 
 
 extern void zero_sk2pk(const unsigned char sk[ZERO_PK_WIDTH], unsigned char pk[ZERO_PK_WIDTH]);
+
+extern void zero_sk2tk(const unsigned char sk[ZERO_PK_WIDTH], unsigned char tk[ZERO_TK_WIDTH]);
+
+extern void zero_tk2pk(const unsigned char tk[ZERO_TK_WIDTH], unsigned char pk[ZERO_PK_WIDTH]);
 
 extern void zero_pk2pkr(
     const unsigned char pk[ZERO_PK_WIDTH],
@@ -64,7 +73,6 @@ extern char zero_pkr_valid(
 extern char zero_pk_valid(
     const unsigned char pk[ZERO_PK_WIDTH]
 );
-
 
 
 #endif //LIBCZERO_INCLUDE_KEYS_H

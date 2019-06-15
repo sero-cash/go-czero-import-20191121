@@ -74,6 +74,15 @@ func ZeroInit_NoCircuit() error {
 	return nil
 }
 
+func ZeroInit_OnlyInOuts() error {
+	go func() {
+		C.zero_init_inouts()
+		init_chan <- true
+	}()
+	<-init_chan
+	return nil
+}
+
 func Random() (out keys.Uint256) {
 	C.zero_random32(
 		(*C.uchar)(unsafe.Pointer(&out[0])),
@@ -119,7 +128,7 @@ func Base58Decode(str *string, bytes []byte) (e error) {
 		(*C.uchar)(unsafe.Pointer(&bytes[0])),
 		C.int(len(bytes)),
 	)
-	if ret == C.char(0) {
+	if ret <= C.int(len(bytes)) {
 		return
 	} else {
 		e = errors.New("base58 can not decode string")
@@ -283,7 +292,7 @@ type OutputDesc struct {
 
 func GenOutputProof(desc *OutputDesc) (e error) {
 	var is_v1 int
-	if desc.Height >= seroparam.SIP2 {
+	if desc.Height >= seroparam.SIP2() {
 		is_v1 = 1
 	} else {
 		is_v1 = 0
@@ -586,7 +595,7 @@ type OutputVerifyDesc struct {
 
 func VerifyOutput(desc *OutputVerifyDesc) (e error) {
 	var is_v1 int
-	if desc.Height >= seroparam.SIP2 {
+	if desc.Height >= seroparam.SIP2() {
 		is_v1 = 1
 	} else {
 		is_v1 = 0
@@ -798,12 +807,12 @@ func VerifyInputS(desc *VerifyInputSDesc) (e error) {
 
 func Miner_Hash_0(in []byte, num uint64) []byte {
 	var bs [64]byte
-	if num >= seroparam.VP1 {
+	if num >= seroparam.VP1() {
 		C.zero_hash_2_enter(
 			(*C.uchar)(unsafe.Pointer(&in[0])),
 			(*C.uchar)(unsafe.Pointer(&bs[0])),
 		)
-	} else if num >= seroparam.SIP1 {
+	} else if num >= seroparam.SIP1() {
 		C.zero_hash_1_enter(
 			(*C.uchar)(unsafe.Pointer(&in[0])),
 			(*C.uchar)(unsafe.Pointer(&bs[0])),
@@ -819,12 +828,12 @@ func Miner_Hash_0(in []byte, num uint64) []byte {
 
 func Miner_Hash_1(in []byte, num uint64) []byte {
 	var bs [32]byte
-	if num >= seroparam.VP1 {
+	if num >= seroparam.VP1() {
 		C.zero_hash_2_leave(
 			(*C.uchar)(unsafe.Pointer(&in[0])),
 			(*C.uchar)(unsafe.Pointer(&bs[0])),
 		)
-	} else if num >= seroparam.SIP1 {
+	} else if num >= seroparam.SIP1() {
 		C.zero_hash_1_leave(
 			(*C.uchar)(unsafe.Pointer(&in[0])),
 			(*C.uchar)(unsafe.Pointer(&bs[0])),
