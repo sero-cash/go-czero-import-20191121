@@ -49,12 +49,12 @@ func IsExchange() bool {
 	return is_exchange
 }
 
-var is_exchangeVlueStr = false
+var is_exchangeValueStr = false
 
-func InitExchangeVlueStr(b bool) {
-	is_exchangeVlueStr = b
+func InitExchangeValueStr(b bool) {
+	is_exchangeValueStr = b
 }
 
-func IsExchangeVlueStr() bool {
-	return is_exchangeVlueStr
+func IsExchangeValueStr() bool {
+	return is_exchangeValueStr
 }
