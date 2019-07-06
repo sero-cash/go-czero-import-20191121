@@ -48,3 +48,13 @@ func InitExchange(b bool) {
 func IsExchange() bool {
 	return is_exchange
 }
+
+var is_exchangeValueStr = false
+
+func InitExchangeValueStr(b bool) {
+	is_exchangeValueStr = b
+}
+
+func IsExchangeValueStr() bool {
+	return is_exchangeValueStr
+}

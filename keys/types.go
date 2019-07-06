@@ -49,13 +49,16 @@ func (b Uint256) MarshalText() ([]byte, error) {
 }
 
 func (b *Uint256) UnmarshalText(input []byte) error {
+	if len(input) < 2 {
+		return fmt.Errorf("hex string length must > 2 : current is %v", len(input))
+	}
 	raw := input[2:]
 	if len(raw) == 0 {
 		return nil
 	}
 	dec := Uint256{}
 	if len(raw)/2 != len(dec[:]) {
-		return fmt.Errorf("hex string has length %d, want %d for %s", len(raw), len(dec[:])*2, "Uint128")
+		return fmt.Errorf("hex string has length %d, want %d for %s", len(raw), len(dec[:])*2, "Uint256")
 	}
 	if _, err := hex.Decode(dec[:], raw); err != nil {
 		return err
@@ -115,6 +118,9 @@ func (b Uint128) MarshalText() ([]byte, error) {
 }
 
 func (b *Uint128) UnmarshalText(input []byte) error {
+	if len(input) < 2 {
+		return fmt.Errorf("hex string length must > 2 : current is %v", len(input))
+	}
 	raw := input[2:]
 	if len(raw) == 0 {
 		return nil
@@ -158,6 +164,9 @@ func (b PKr) MarshalText() ([]byte, error) {
 }
 
 func (b *PKr) UnmarshalText(input []byte) error {
+	if len(input) < 2 {
+		return fmt.Errorf("hex string length must > 2 : current is %d", len(input))
+	}
 	raw := input[2:]
 	if len(raw) == 0 {
 		return nil
