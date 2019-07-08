@@ -31,6 +31,8 @@ import (
 	"crypto/rand"
 	"errors"
 	"unsafe"
+
+	"github.com/sero-cash/go-czero-import/seroparam"
 )
 
 func logBytes(bytes []byte) {
@@ -185,6 +187,9 @@ func Addr2PKrAndLICr(addr *Uint512, height uint64) (pkr PKr, licr LICr, ret bool
 
 func CheckLICr(pkr *PKr, licr *LICr, height uint64) bool {
 	//log.Info("CHECKLICr", "height:", height, "L", licr.L)
+	if seroparam.Is_Dev() {
+		return true
+	}
 	if !PKrValid(pkr) {
 		return false
 	}
