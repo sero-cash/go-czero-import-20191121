@@ -50,4 +50,10 @@ func SIP4() uint64 {
 
 const MAX_O_INS_LENGTH = int(2500)
 
-const MAX_TX_OUT_COUNT_LENGTH = int(256)
+const MAX_O_OUT_LENGTH = int(10)
+
+const MAX_Z_OUT_LENGTH_OLD = int(6)
+
+const MAX_Z_OUT_LENGTH_SIP2 = int(500)
+
+const MAX_CONTRACT_OUT_COUNT_LENGTH = int(256)
