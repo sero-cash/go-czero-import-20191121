@@ -166,6 +166,11 @@ type LICr struct {
 }
 
 func Addr2PKrAndLICr(addr *Uint512, height uint64) (pkr PKr, licr LICr, ret bool) {
+	if !seroparam.NeedLic() {
+		pkr = Addr2PKr(addr, nil)
+		ret = true
+		return
+	}
 	r := C.zero_pk2pkr_and_licr(
 		//---in---
 		(*C.uchar)(unsafe.Pointer(&addr[0])),
@@ -186,7 +191,9 @@ func Addr2PKrAndLICr(addr *Uint512, height uint64) (pkr PKr, licr LICr, ret bool
 }
 
 func CheckLICr(pkr *PKr, licr *LICr, height uint64) bool {
-	//log.Info("CHECKLICr", "height:", height, "L", licr.L)
+	if !seroparam.NeedLic() {
+		return true
+	}
 	if seroparam.Is_Dev() {
 		return true
 	}
