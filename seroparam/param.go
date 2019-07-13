@@ -42,10 +42,14 @@ func VP0() uint64 {
 
 func SIP4() uint64 {
 	if is_dev {
-		return 0
+		return 1225000
 	} else {
 		return uint64(1293528)
 	}
+}
+
+func Dev_diff() uint64{
+	return 1224977
 }
 
 const MAX_O_INS_LENGTH = int(2500)
