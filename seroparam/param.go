@@ -44,7 +44,7 @@ func SIP4() uint64 {
 	if is_dev {
 		return 0
 	} else {
-		return uint64(1225500)
+		return uint64(1225000)
 	}
 }
 
