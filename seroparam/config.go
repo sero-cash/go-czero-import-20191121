@@ -58,7 +58,3 @@ func InitExchangeValueStr(b bool) {
 func IsExchangeValueStr() bool {
 	return is_exchangeValueStr
 }
-
-func NeedLic() bool {
-	return false
-}
