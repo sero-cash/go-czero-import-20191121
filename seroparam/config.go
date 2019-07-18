@@ -58,3 +58,12 @@ func InitExchangeValueStr(b bool) {
 func IsExchangeValueStr() bool {
 	return is_exchangeValueStr
 }
+
+var currentBlockNumber = uint64(0)
+
+func InitCurrentBlockNumber(number uint64) {
+	currentBlockNumber = number
+}
+func DefaultCurrentBlock() uint64 {
+	return currentBlockNumber
+}
