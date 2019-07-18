@@ -113,6 +113,7 @@ func TestKeys(t *testing.T) {
 }
 
 func TestMain(m *testing.M) {
-	cpt.ZeroInit("", cpt.NET_Dev)
+	//cpt.ZeroInit("", cpt.NET_Dev)
+	cpt.ZeroInit_OnlyInOuts()
 	m.Run()
 }
