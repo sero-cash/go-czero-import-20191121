@@ -36,6 +36,7 @@ extern char zero_output(
     //---out---
     unsigned char asset_cm_ret[32],
     unsigned char ar_ret[32],
+    unsigned char key_ret[32],
     unsigned char out_cm_ret[32],
     unsigned char einfo_ret[ZERO_INFO_WIDTH],
     unsigned char sbase_ret[32],

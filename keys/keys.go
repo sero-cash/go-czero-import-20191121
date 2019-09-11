@@ -177,6 +177,7 @@ func Addr2PKrAndLICr(addr *Uint512, height uint64) (pkr PKr, licr LICr, ret bool
 		(*C.ulong)(unsafe.Pointer(&licr.H)),
 		(*C.uchar)(unsafe.Pointer(&licr.Proof[0])),
 	)
+	licr.C = 1000000000000
 	if r == C.char(0) {
 		ret = true
 	} else {

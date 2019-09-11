@@ -284,6 +284,7 @@ type OutputDesc struct {
 	//---out---
 	Asset_cm_ret keys.Uint256
 	Ar_ret       keys.Uint256
+	Key_ret      keys.Uint256
 	Out_cm_ret   keys.Uint256
 	Einfo_ret    Einfo
 	RPK_ret      keys.Uint256
@@ -309,6 +310,7 @@ func GenOutputProof(desc *OutputDesc) (e error) {
 		//---out---
 		(*C.uchar)(unsafe.Pointer(&desc.Asset_cm_ret[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.Ar_ret[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Key_ret[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.Out_cm_ret[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.Einfo_ret[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.RPK_ret[0])),
