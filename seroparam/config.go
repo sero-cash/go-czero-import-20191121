@@ -33,7 +33,7 @@ func InitComfirmedBlock(delay uint64) {
 
 func DefaultConfirmedBlock() uint64 {
 	if is_dev {
-		return 12
+		return confirmedBlock
 	} else {
 		return confirmedBlock
 	}
