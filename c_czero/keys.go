@@ -14,36 +14,24 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the libzero library. If not, see <http://www.gnu.org/licenses/>.
 
-package keys
+package c_czero
 
 /*
-#cgo CFLAGS: -I ../czero/include
-
-#cgo LDFLAGS: -L ../czero/lib
-
-#cgo LDFLAGS: -lczero
 
 #include "zero.h"
+
 */
 import "C"
-
 import (
-	"crypto/rand"
 	"errors"
 	"unsafe"
+
+	"github.com/sero-cash/go-czero-import/c_type"
 
 	"github.com/sero-cash/go-czero-import/seroparam"
 )
 
-func logBytes(bytes []byte) {
-	C.zero_log_bytes(
-		(*C.uchar)(unsafe.Pointer(&bytes[0])),
-		(C.int)(len(bytes)),
-	)
-	return
-}
-
-func Sk2PK(sk *Uint512) (addr Uint512) {
+func Sk2PK(sk *c_type.Uint512) (addr c_type.Uint512) {
 	C.zero_sk2pk(
 		(*C.uchar)(unsafe.Pointer(&sk[0])),
 		(*C.uchar)(unsafe.Pointer(&addr[0])),
@@ -51,7 +39,7 @@ func Sk2PK(sk *Uint512) (addr Uint512) {
 	return
 }
 
-func Seed2Sk(seed *Uint256) (sk Uint512) {
+func Seed2Sk(seed *c_type.Uint256) (sk c_type.Uint512) {
 	C.zero_seed2sk(
 		(*C.uchar)(unsafe.Pointer(&seed[0])),
 		(*C.uchar)(unsafe.Pointer(&sk[0])),
@@ -59,7 +47,7 @@ func Seed2Sk(seed *Uint256) (sk Uint512) {
 	return
 }
 
-func Sk2Tk(sk *Uint512) (tk Uint512) {
+func Sk2Tk(sk *c_type.Uint512) (tk c_type.Uint512) {
 	C.zero_sk2tk(
 		(*C.uchar)(unsafe.Pointer(&sk[0])),
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
@@ -67,7 +55,7 @@ func Sk2Tk(sk *Uint512) (tk Uint512) {
 	return
 }
 
-func Tk2Pk(tk *Uint512) (pk Uint512) {
+func Tk2Pk(tk *c_type.Uint512) (pk c_type.Uint512) {
 	C.zero_tk2pk(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
 		(*C.uchar)(unsafe.Pointer(&pk[0])),
@@ -75,7 +63,7 @@ func Tk2Pk(tk *Uint512) (pk Uint512) {
 	return
 }
 
-func Seed2Tk(seed *Uint256) (tk Uint512) {
+func Seed2Tk(seed *c_type.Uint256) (tk c_type.Uint512) {
 	C.zero_seed2tk(
 		(*C.uchar)(unsafe.Pointer(&seed[0])),
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
@@ -83,7 +71,7 @@ func Seed2Tk(seed *Uint256) (tk Uint512) {
 	return
 }
 
-func Seed2Addr(seed *Uint256) (addr Uint512) {
+func Seed2Addr(seed *c_type.Uint256) (addr c_type.Uint512) {
 	C.zero_seed2pk(
 		(*C.uchar)(unsafe.Pointer(&seed[0])),
 		(*C.uchar)(unsafe.Pointer(&addr[0])),
@@ -91,19 +79,7 @@ func Seed2Addr(seed *Uint256) (addr Uint512) {
 	return
 }
 
-func Seed2PKr(seed *Uint256, rnd *Uint256) (pkr PKr) {
-	addr := Seed2Addr(seed)
-	var from_r Uint256
-	if rnd != nil {
-		copy(from_r[:], rnd[:])
-	} else {
-		from_r = RandUint256()
-	}
-	pkr = Addr2PKr(&addr, &from_r)
-	return
-}
-
-func IsPKValid(pk *Uint512) bool {
+func IsPKValid(pk *c_type.Uint512) bool {
 	ret := C.zero_pk_valid(
 		(*C.uchar)(unsafe.Pointer(&pk[0])),
 	)
@@ -115,27 +91,19 @@ func IsPKValid(pk *Uint512) bool {
 	}
 }
 
-func RandUint512() (hash Uint512) {
-	rand.Read(hash[:])
+func Seeds2Tks(seeds []c_type.Uint256) (tks []c_type.Uint512) {
+	for _, seed := range seeds {
+		tks = append(tks, Seed2Tk(&seed))
+	}
 	return
 }
 
-func RandUint256() (hash Uint256) {
-	rand.Read(hash[:])
-	return
-}
-
-func RandUint128() (hash Uint128) {
-	rand.Read(hash[:])
-	return
-}
-
-func Addr2PKr(addr *Uint512, r *Uint256) (pkr PKr) {
+func Addr2PKr(addr *c_type.Uint512, r *c_type.Uint256) (pkr c_type.PKr) {
 	if r == nil {
-		t := RandUint256()
+		t := c_type.RandUint256()
 		r = &t
 	} else {
-		if (*r) == Empty_Uint256 {
+		if (*r) == c_type.Empty_Uint256 {
 			panic("gen pkr, but r is empty")
 		}
 	}
@@ -148,7 +116,7 @@ func Addr2PKr(addr *Uint512, r *Uint256) (pkr PKr) {
 	return
 }
 
-func HashPKr(pkr *PKr) (ret [20]byte) {
+func HashPKr(pkr *c_type.PKr) (ret [20]byte) {
 	C.zero_hpkr(
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),
 		(*C.uchar)(unsafe.Pointer(&ret[0])),
@@ -165,7 +133,7 @@ type LICr struct {
 	H     uint64
 }
 
-func Addr2PKrAndLICr(addr *Uint512, height uint64) (pkr PKr, licr LICr, ret bool) {
+func Addr2PKrAndLICr(addr *c_type.Uint512, height uint64) (pkr c_type.PKr, licr LICr, ret bool) {
 	r := C.zero_pk2pkr_and_licr(
 		//---in---
 		(*C.uchar)(unsafe.Pointer(&addr[0])),
@@ -186,7 +154,7 @@ func Addr2PKrAndLICr(addr *Uint512, height uint64) (pkr PKr, licr LICr, ret bool
 	return
 }
 
-func CheckLICr(pkr *PKr, licr *LICr, height uint64) bool {
+func CheckLICr(pkr *c_type.PKr, licr *LICr, height uint64) bool {
 	if seroparam.Is_Dev() {
 		return true
 	}
@@ -212,7 +180,7 @@ func (self *LICr) GetProp() (counteract uint64, limit uint64) {
 	return 0, 0
 }
 
-func IsMyPKr(tk *Uint512, pkr *PKr) (succ bool) {
+func IsMyPKr(tk *c_type.Uint512, pkr *c_type.PKr) (succ bool) {
 	ret := C.zero_ismy_pkr(
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
@@ -226,7 +194,7 @@ func IsMyPKr(tk *Uint512, pkr *PKr) (succ bool) {
 	}
 }
 
-func FetchKey(tk *Uint512, rpk *Uint256) (ret Uint256, flag bool) {
+func FetchKey(tk *c_type.Uint512, rpk *c_type.Uint256) (ret c_type.Uint256, flag bool) {
 	f := C.zero_fetch_key(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
 		(*C.uchar)(unsafe.Pointer(&rpk[0])),
@@ -240,14 +208,14 @@ func FetchKey(tk *Uint512, rpk *Uint256) (ret Uint256, flag bool) {
 	return
 }
 
-func SignPKrBySk(sk *Uint512, data *Uint256, pkr *PKr) (sign Uint512, e error) {
+func SignPKrBySk(sk *c_type.Uint512, data *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
 	C.zero_sign_pkr_by_sk(
 		(*C.uchar)(unsafe.Pointer(&data[0])),
 		(*C.uchar)(unsafe.Pointer(&sk[0])),
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),
 		(*C.uchar)(unsafe.Pointer(&sign[0])),
 	)
-	if sign == Empty_Uint512 {
+	if sign == c_type.Empty_Uint512 {
 		e = errors.New("SignOAddr: sign is empty")
 		return
 	} else {
@@ -255,14 +223,14 @@ func SignPKrBySk(sk *Uint512, data *Uint256, pkr *PKr) (sign Uint512, e error) {
 	}
 }
 
-func SignPKr(seed *Uint256, data *Uint256, pkr *PKr) (sign Uint512, e error) {
+func SignPKr(seed *c_type.Uint256, data *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
 	C.zero_sign_pkr(
 		(*C.uchar)(unsafe.Pointer(&data[0])),
 		(*C.uchar)(unsafe.Pointer(&seed[0])),
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),
 		(*C.uchar)(unsafe.Pointer(&sign[0])),
 	)
-	if sign == Empty_Uint512 {
+	if sign == c_type.Empty_Uint512 {
 		e = errors.New("SignOAddr: sign is empty")
 		return
 	} else {
@@ -270,7 +238,7 @@ func SignPKr(seed *Uint256, data *Uint256, pkr *PKr) (sign Uint512, e error) {
 	}
 }
 
-func VerifyPKr(data *Uint256, sign *Uint512, pkr *PKr) bool {
+func VerifyPKr(data *c_type.Uint256, sign *c_type.Uint512, pkr *c_type.PKr) bool {
 	ret := C.zero_verify_pkr(
 		(*C.uchar)(unsafe.Pointer(&data[0])),
 		(*C.uchar)(unsafe.Pointer(&sign[0])),
@@ -283,7 +251,7 @@ func VerifyPKr(data *Uint256, sign *Uint512, pkr *PKr) bool {
 	}
 }
 
-func PKrValid(pkr *PKr) bool {
+func PKrValid(pkr *c_type.PKr) bool {
 	ret := C.zero_pkr_valid(
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),
 	)

@@ -14,34 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the libzero library. If not, see <http://www.gnu.org/licenses/>.
 
-package cpt
+package c_czero
 
 /*
-
-#cgo CFLAGS: -I ../czero/include
-
-#cgo LDFLAGS: -L ../czero/lib -lczero
 
 #include "zero.h"
 
 */
 import "C"
 import (
-	"encoding/hex"
 	"errors"
-	"fmt"
 	"unsafe"
 
+	"github.com/sero-cash/go-czero-import/c_type"
+
 	"github.com/sero-cash/go-czero-import/seroparam"
-
-	"github.com/sero-cash/go-sero/crypto/sha3"
-
-	"github.com/sero-cash/go-czero-import/keys"
 )
-
-func Is_czero_debug() bool {
-	return false
-}
 
 var init_chan = make(chan bool)
 
@@ -83,14 +71,14 @@ func ZeroInit_OnlyInOuts() error {
 	return nil
 }
 
-func Random() (out keys.Uint256) {
+func Random() (out c_type.Uint256) {
 	C.zero_random32(
 		(*C.uchar)(unsafe.Pointer(&out[0])),
 	)
 	return
 }
 
-func Force_Fr(data *keys.Uint256) (fr keys.Uint256) {
+func Force_Fr(data *c_type.Uint256) (fr c_type.Uint256) {
 	C.zero_force_fr(
 		(*C.uchar)(unsafe.Pointer(&data[0])),
 		(*C.uchar)(unsafe.Pointer(&fr[0])),
@@ -98,7 +86,7 @@ func Force_Fr(data *keys.Uint256) (fr keys.Uint256) {
 	return
 }
 
-func Combine(l *keys.Uint256, r *keys.Uint256) (out keys.Uint256) {
+func Combine(l *c_type.Uint256, r *c_type.Uint256) (out c_type.Uint256) {
 	C.zero_merkle_combine(
 		(*C.uchar)(unsafe.Pointer(&l[0])),
 		(*C.uchar)(unsafe.Pointer(&r[0])),
@@ -138,85 +126,52 @@ func Base58Decode(str *string, bytes []byte) (e error) {
 
 type Pre struct {
 	I uint32
-	R keys.Uint256
-	Z [2]keys.Uint256 //I256
+	R c_type.Uint256
+	Z [2]c_type.Uint256 //I256
 }
 type Extra struct {
 	Pre
-	O      [2]keys.Uint256 //I256
-	S1_ret keys.Uint256
+	O      [2]c_type.Uint256 //I256
+	S1_ret c_type.Uint256
 }
 
 type Out struct {
-	Addr           keys.Uint512
-	Value          keys.Uint256 //U256
-	Info           keys.Uint512
-	EText_ret      [ETEXT_WIDTH]byte
-	Currency       keys.Uint256
-	Commitment_ret keys.Uint256
+	Addr           c_type.Uint512
+	Value          c_type.Uint256 //U256
+	Info           c_type.Uint512
+	EText_ret      [c_type.ETEXT_WIDTH]byte
+	Currency       c_type.Uint256
+	Commitment_ret c_type.Uint256
 }
 
 type In struct {
-	EText      [ETEXT_WIDTH]byte
-	Commitment keys.Uint256
-	Path       [DEPTH * 32]byte
-	S1         keys.Uint256
+	EText      [c_type.ETEXT_WIDTH]byte
+	Commitment c_type.Uint256
+	Path       [c_type.DEPTH * 32]byte
+	S1         c_type.Uint256
 	Index      uint32
-	Currency   keys.Uint256
-	Anchor     keys.Uint256
-	Nil_ret    keys.Uint256
-	Trace_ret  keys.Uint256
-}
-
-type Proof [PROOF_WIDTH]byte
-
-func (b Proof) MarshalText() ([]byte, error) {
-	result := make([]byte, len(b)*2+2)
-	copy(result, `0x`)
-	hex.Encode(result[2:], b[:])
-	return result, nil
-}
-
-func (b *Proof) UnmarshalText(input []byte) error {
-	raw := input[2:]
-	if len(raw) == 0 {
-		return nil
-	}
-	dec := Proof{}
-	if len(raw)/2 != len(dec[:]) {
-		return fmt.Errorf("hex string has length %d, want %d for %s", len(raw), len(dec[:])*2, "Proof")
-	}
-	if _, err := hex.Decode(dec[:], raw); err != nil {
-		return err
-	} else {
-		*b = dec
-	}
-	return nil
-}
-
-func (self *Proof) ToHash() (ret keys.Uint256) {
-	d := sha3.NewKeccak256()
-	d.Write(self[:])
-	copy(ret[:], d.Sum(nil))
-	return
+	Currency   c_type.Uint256
+	Anchor     c_type.Uint256
+	Nil_ret    c_type.Uint256
+	Trace_ret  c_type.Uint256
 }
 
 type Common struct {
-	Seed     keys.Uint256
-	Hash_O   keys.Uint256
-	Currency keys.Uint256
-	C        [2]keys.Uint256
+	Seed     c_type.Uint256
+	Hash_O   c_type.Uint256
+	Currency c_type.Uint256
+	C        [2]c_type.Uint256
 }
 
 func GenOutCM(
-	tkn_currency *keys.Uint256,
-	tkn_value *keys.Uint256,
-	tkt_category *keys.Uint256,
-	tkt_value *keys.Uint256,
-	memo *keys.Uint512,
-	pkr *keys.PKr,
-	rsk *keys.Uint256,
-) (cm keys.Uint256) {
+	tkn_currency *c_type.Uint256,
+	tkn_value *c_type.Uint256,
+	tkt_category *c_type.Uint256,
+	tkt_value *c_type.Uint256,
+	memo *c_type.Uint512,
+	pkr *c_type.PKr,
+	rsk *c_type.Uint256,
+) (cm c_type.Uint256) {
 	C.zero_out_commitment(
 		(*C.uchar)(unsafe.Pointer(&tkn_currency[0])),
 		(*C.uchar)(unsafe.Pointer(&tkn_value[0])),
@@ -232,8 +187,8 @@ func GenOutCM(
 
 func GenRootCM(
 	index uint64,
-	out_cm *keys.Uint256,
-) (cm keys.Uint256) {
+	out_cm *c_type.Uint256,
+) (cm c_type.Uint256) {
 	C.zero_root_commitment(
 		C.ulong(index),
 		(*C.uchar)(unsafe.Pointer(&out_cm[0])),
@@ -243,14 +198,14 @@ func GenRootCM(
 }
 
 type ConfirmOutputDesc struct {
-	Tkn_currency keys.Uint256
-	Tkn_value    keys.Uint256
-	Tkt_category keys.Uint256
-	Tkt_value    keys.Uint256
-	Memo         keys.Uint512
-	Pkr          keys.PKr
-	Rsk          keys.Uint256
-	Out_cm       keys.Uint256
+	Tkn_currency c_type.Uint256
+	Tkn_value    c_type.Uint256
+	Tkt_category c_type.Uint256
+	Tkt_value    c_type.Uint256
+	Memo         c_type.Uint512
+	Pkr          c_type.PKr
+	Rsk          c_type.Uint256
+	Out_cm       c_type.Uint256
 }
 
 func ConfirmOutput(desc *ConfirmOutputDesc) (e error) {
@@ -274,21 +229,21 @@ func ConfirmOutput(desc *ConfirmOutputDesc) (e error) {
 
 type OutputDesc struct {
 	//---in---
-	Tkn_currency keys.Uint256
-	Tkn_value    keys.Uint256
-	Tkt_category keys.Uint256
-	Tkt_value    keys.Uint256
-	Memo         keys.Uint512
-	Pkr          keys.PKr
+	Tkn_currency c_type.Uint256
+	Tkn_value    c_type.Uint256
+	Tkt_category c_type.Uint256
+	Tkt_value    c_type.Uint256
+	Memo         c_type.Uint512
+	Pkr          c_type.PKr
 	Height       uint64
 	//---out---
-	Asset_cm_ret keys.Uint256
-	Ar_ret       keys.Uint256
-	Key_ret      keys.Uint256
-	Out_cm_ret   keys.Uint256
-	Einfo_ret    Einfo
-	RPK_ret      keys.Uint256
-	Proof_ret    Proof
+	Asset_cm_ret c_type.Uint256
+	Ar_ret       c_type.Uint256
+	Key_ret      c_type.Uint256
+	Out_cm_ret   c_type.Uint256
+	Einfo_ret    c_type.Einfo
+	RPK_ret      c_type.Uint256
+	Proof_ret    c_type.Proof
 }
 
 func GenOutputProof(desc *OutputDesc) (e error) {
@@ -324,43 +279,17 @@ func GenOutputProof(desc *OutputDesc) (e error) {
 	}
 }
 
-type Einfo [INFO_WIDTH]byte
-
-func (b Einfo) MarshalText() ([]byte, error) {
-	result := make([]byte, len(b)*2+2)
-	copy(result, `0x`)
-	hex.Encode(result[2:], b[:])
-	return result, nil
-}
-
-func (b *Einfo) UnmarshalText(input []byte) error {
-	raw := input[2:]
-	if len(raw) == 0 {
-		return nil
-	}
-	dec := Einfo{}
-	if len(raw)/2 != len(dec[:]) {
-		return fmt.Errorf("hex string has length %d, want %d for %s", len(raw), len(dec[:])*2, "Einfo")
-	}
-	if _, err := hex.Decode(dec[:], raw); err != nil {
-		return err
-	} else {
-		*b = dec
-	}
-	return nil
-}
-
 type EncOutputInfo struct {
 	//---in---
-	Key          keys.Uint256
-	Tkn_currency keys.Uint256
-	Tkn_value    keys.Uint256
-	Tkt_category keys.Uint256
-	Tkt_value    keys.Uint256
-	Rsk          keys.Uint256
-	Memo         keys.Uint512
+	Key          c_type.Uint256
+	Tkn_currency c_type.Uint256
+	Tkn_value    c_type.Uint256
+	Tkt_category c_type.Uint256
+	Tkt_value    c_type.Uint256
+	Rsk          c_type.Uint256
+	Memo         c_type.Uint512
 	//---out---
-	Einfo Einfo
+	Einfo c_type.Einfo
 }
 
 func EncOutput(desc *EncOutputInfo) {
@@ -380,16 +309,16 @@ func EncOutput(desc *EncOutputInfo) {
 
 type InfoDesc struct {
 	//---in---
-	Key   keys.Uint256
+	Key   c_type.Uint256
 	Flag  bool
-	Einfo Einfo
+	Einfo c_type.Einfo
 	//---out---
-	Tkn_currency keys.Uint256
-	Tkn_value    keys.Uint256
-	Tkt_category keys.Uint256
-	Tkt_value    keys.Uint256
-	Rsk          keys.Uint256
-	Memo         keys.Uint512
+	Tkn_currency c_type.Uint256
+	Tkn_value    c_type.Uint256
+	Tkt_category c_type.Uint256
+	Tkt_value    c_type.Uint256
+	Rsk          c_type.Uint256
+	Memo         c_type.Uint512
 }
 
 func DecOutput(desc *InfoDesc) {
@@ -412,7 +341,7 @@ func DecOutput(desc *InfoDesc) {
 	)
 }
 
-func GenTil(tk *keys.Uint512, root_cm *keys.Uint256) (til keys.Uint256) {
+func GenTil(tk *c_type.Uint512, root_cm *c_type.Uint256) (til c_type.Uint256) {
 	C.zero_til(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
 		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
@@ -430,7 +359,7 @@ func FetchRootCM(tk *keys.Uint512, til *keys.Uint256) (root_cm keys.Uint256) {
 	return
 }
 
-func GenNil(sk *keys.Uint512, root_cm *keys.Uint256) (nil keys.Uint256) {
+func GenNil(sk *c_type.Uint512, root_cm *c_type.Uint256) (nil c_type.Uint256) {
 	C.zero_nil(
 		(*C.uchar)(unsafe.Pointer(&sk[0])),
 		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
@@ -441,23 +370,23 @@ func GenNil(sk *keys.Uint512, root_cm *keys.Uint256) (nil keys.Uint256) {
 
 type InputDesc struct {
 	//---in0--
-	Sk keys.Uint512
+	Sk c_type.Uint512
 	//---in---
-	Seed  keys.Uint256
-	Pkr   keys.PKr
-	RPK   keys.Uint256
-	Einfo Einfo
+	Seed  c_type.Uint256
+	Pkr   c_type.PKr
+	RPK   c_type.Uint256
+	Einfo c_type.Einfo
 	//--
 	Index    uint64
-	Anchor   keys.Uint256
+	Anchor   c_type.Uint256
 	Position uint32
-	Path     [DEPTH * 32]byte
+	Path     [c_type.DEPTH * 32]byte
 	//---out---
-	Asset_cm_ret keys.Uint256
-	Ar_ret       keys.Uint256
-	Nil_ret      keys.Uint256
-	Til_ret      keys.Uint256
-	Proof_ret    [PROOF_WIDTH]byte
+	Asset_cm_ret c_type.Uint256
+	Ar_ret       c_type.Uint256
+	Nil_ret      c_type.Uint256
+	Til_ret      c_type.Uint256
+	Proof_ret    [c_type.PROOF_WIDTH]byte
 }
 
 func GenInputProofBySk(desc *InputDesc) (e error) {
@@ -514,18 +443,6 @@ func GenInputProof(desc *InputDesc) (e error) {
 	}
 }
 
-type BalanceDesc struct {
-	Zin_acms  []byte
-	Zin_ars   []byte
-	Zout_acms []byte
-	Zout_ars  []byte
-	Oin_accs  []byte
-	Oout_accs []byte
-	Hash      keys.Uint256
-	Bcr       keys.Uint256
-	Bsign     keys.Uint512
-}
-
 func PtrOfSlice(s []byte) *C.uchar {
 	if len(s) > 0 {
 		return (*C.uchar)(unsafe.Pointer(&s[0]))
@@ -534,7 +451,7 @@ func PtrOfSlice(s []byte) *C.uchar {
 	}
 }
 
-func SignBalance(desc *BalanceDesc) {
+func SignBalance(desc *c_type.BalanceDesc) {
 	C.zero_sign_balance(
 		C.int(len(desc.Zin_acms)/32),
 		PtrOfSlice(desc.Zin_acms),
@@ -554,7 +471,7 @@ func SignBalance(desc *BalanceDesc) {
 	return
 }
 
-func VerifyBalance(desc *BalanceDesc) (e error) {
+func VerifyBalance(desc *c_type.BalanceDesc) (e error) {
 	ret := C.zero_verify_balance(
 		C.int(len(desc.Zin_acms)/32),
 		PtrOfSlice(desc.Zin_acms),
@@ -577,12 +494,12 @@ func VerifyBalance(desc *BalanceDesc) (e error) {
 }
 
 type AssetDesc struct {
-	Tkn_currency keys.Uint256
-	Tkn_value    keys.Uint256
-	Tkt_category keys.Uint256
-	Tkt_value    keys.Uint256
-	Asset_cc     keys.Uint256
-	Asset_cm     keys.Uint256
+	Tkn_currency c_type.Uint256
+	Tkn_value    c_type.Uint256
+	Tkt_category c_type.Uint256
+	Tkt_value    c_type.Uint256
+	Asset_cc     c_type.Uint256
+	Asset_cm     c_type.Uint256
 }
 
 func GenAssetCC(desc *AssetDesc) {
@@ -597,10 +514,10 @@ func GenAssetCC(desc *AssetDesc) {
 }
 
 type OutputVerifyDesc struct {
-	AssetCM keys.Uint256
-	OutCM   keys.Uint256
-	RPK     keys.Uint256
-	Proof   Proof
+	AssetCM c_type.Uint256
+	OutCM   c_type.Uint256
+	RPK     c_type.Uint256
+	Proof   c_type.Proof
 	Height  uint64
 }
 
@@ -627,10 +544,10 @@ func VerifyOutput(desc *OutputVerifyDesc) (e error) {
 }
 
 type InputVerifyDesc struct {
-	AssetCM keys.Uint256
-	Anchor  keys.Uint256
-	Nil     keys.Uint256
-	Proof   Proof
+	AssetCM c_type.Uint256
+	Anchor  c_type.Uint256
+	Nil     c_type.Uint256
+	Proof   c_type.Proof
 }
 
 func VerifyInput(desc *InputVerifyDesc) (e error) {
@@ -649,13 +566,13 @@ func VerifyInput(desc *InputVerifyDesc) (e error) {
 }
 
 type ConfirmPkgDesc struct {
-	Tkn_currency keys.Uint256
-	Tkn_value    keys.Uint256
-	Tkt_category keys.Uint256
-	Tkt_value    keys.Uint256
-	Memo         keys.Uint512
-	Ar_ret       keys.Uint256
-	Pkg_cm       keys.Uint256
+	Tkn_currency c_type.Uint256
+	Tkn_value    c_type.Uint256
+	Tkt_category c_type.Uint256
+	Tkt_value    c_type.Uint256
+	Memo         c_type.Uint512
+	Ar_ret       c_type.Uint256
+	Pkg_cm       c_type.Uint256
 }
 
 func ConfirmPkg(desc *ConfirmPkgDesc) (e error) {
@@ -678,18 +595,18 @@ func ConfirmPkg(desc *ConfirmPkgDesc) (e error) {
 
 type PkgDesc struct {
 	//---in---
-	Key          keys.Uint256
-	Tkn_currency keys.Uint256
-	Tkn_value    keys.Uint256
-	Tkt_category keys.Uint256
-	Tkt_value    keys.Uint256
-	Memo         keys.Uint512
+	Key          c_type.Uint256
+	Tkn_currency c_type.Uint256
+	Tkn_value    c_type.Uint256
+	Tkt_category c_type.Uint256
+	Tkt_value    c_type.Uint256
+	Memo         c_type.Uint512
 	//---out---
-	Asset_cm_ret keys.Uint256
-	Ar_ret       keys.Uint256
-	Pkg_cm_ret   keys.Uint256
-	Einfo_ret    Einfo
-	Proof_ret    Proof
+	Asset_cm_ret c_type.Uint256
+	Ar_ret       c_type.Uint256
+	Pkg_cm_ret   c_type.Uint256
+	Einfo_ret    c_type.Einfo
+	Proof_ret    c_type.Proof
 }
 
 func GenPkgProof(desc *PkgDesc) (e error) {
@@ -717,9 +634,9 @@ func GenPkgProof(desc *PkgDesc) (e error) {
 }
 
 type PkgVerifyDesc struct {
-	AssetCM keys.Uint256
-	PkgCM   keys.Uint256
-	Proof   Proof
+	AssetCM c_type.Uint256
+	PkgCM   c_type.Uint256
+	Proof   c_type.Proof
 }
 
 func VerifyPkg(desc *PkgVerifyDesc) (e error) {
@@ -738,16 +655,16 @@ func VerifyPkg(desc *PkgVerifyDesc) (e error) {
 
 type InputSDesc struct {
 	//---in0---
-	Sk keys.Uint512
+	Sk c_type.Uint512
 	//---in---
-	Ehash  keys.Uint256
-	Seed   keys.Uint256
-	Pkr    keys.PKr
-	RootCM keys.Uint256
+	Ehash  c_type.Uint256
+	Seed   c_type.Uint256
+	Pkr    c_type.PKr
+	RootCM c_type.Uint256
 	//---out---
-	Nil_ret  keys.Uint256
-	Til_ret  keys.Uint256
-	Sign_ret keys.Uint512
+	Nil_ret  c_type.Uint256
+	Til_ret  c_type.Uint256
+	Sign_ret c_type.Uint512
 }
 
 func GenInputSProofBySk(desc *InputSDesc) (e error) {
@@ -792,11 +709,11 @@ func GenInputSProof(desc *InputSDesc) (e error) {
 
 type VerifyInputSDesc struct {
 	//---in---
-	Ehash  keys.Uint256
-	RootCM keys.Uint256
-	Pkr    keys.PKr
-	Nil    keys.Uint256
-	Sign   keys.Uint512
+	Ehash  c_type.Uint256
+	RootCM c_type.Uint256
+	Pkr    c_type.PKr
+	Nil    c_type.Uint256
+	Sign   c_type.Uint512
 }
 
 func VerifyInputS(desc *VerifyInputSDesc) (e error) {

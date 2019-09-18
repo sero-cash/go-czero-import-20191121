@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the libzero library. If not, see <http://www.gnu.org/licenses/>.
 
-package cpt
+package c_type
 
 //Currency+Value+Ticket+rPK+Memo
 const ETEXT_WIDTH = 32 + 32 + 32 + 32 + 64

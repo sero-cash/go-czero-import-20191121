@@ -1,6 +1,7 @@
-package keys
+package c_type
 
 import (
+	"crypto/rand"
 	"encoding/hex"
 	"fmt"
 	"math/big"
@@ -19,13 +20,6 @@ func Uint256_To_Uint64(v *Uint256) (ret uint64) {
 	return
 }
 
-func Seeds2Tks(seeds []Uint256) (tks []Uint512) {
-	for _, seed := range seeds {
-		tks = append(tks, Seed2Tk(&seed))
-	}
-	return
-}
-
 func (b *Uint128) ToUint256() (ret Uint256) {
 	copy(ret[:], b[:])
 	return
@@ -35,10 +29,6 @@ func (self Uint256) NewRef() (ret *Uint256) {
 	ret = &Uint256{}
 	copy(ret[:], self[:])
 	return ret
-}
-
-func (self Uint256) LogOut() {
-	logBytes(self[:])
 }
 
 func (b Uint256) MarshalText() ([]byte, error) {
@@ -78,10 +68,6 @@ func (self Uint512) NewRef() (ret *Uint512) {
 	ret = &Uint512{}
 	copy(ret[:], self[:])
 	return ret
-}
-
-func (self Uint512) LogOut() {
-	logBytes(self[:])
 }
 
 func (b Uint512) MarshalText() ([]byte, error) {
@@ -139,6 +125,11 @@ func (b *Uint128) UnmarshalText(input []byte) error {
 
 type PKr [96]byte
 
+func NewPKrByBytes(bs []byte) (ret PKr) {
+	copy(ret[:], bs[:])
+	return
+}
+
 var Empty_PKr = PKr{}
 
 func (self *PKr) ToUint512() (ret Uint512) {
@@ -150,10 +141,6 @@ func (self PKr) NewRef() (ret *PKr) {
 	ret = &PKr{}
 	copy(ret[:], self[:])
 	return ret
-}
-
-func (self PKr) LogOut() {
-	logBytes(self[:])
 }
 
 func (b PKr) MarshalText() ([]byte, error) {
@@ -181,4 +168,19 @@ func (b *PKr) UnmarshalText(input []byte) error {
 		*b = dec
 	}
 	return nil
+}
+
+func RandUint512() (hash Uint512) {
+	rand.Read(hash[:])
+	return
+}
+
+func RandUint256() (hash Uint256) {
+	rand.Read(hash[:])
+	return
+}
+
+func RandUint128() (hash Uint128) {
+	rand.Read(hash[:])
+	return
 }

@@ -20,18 +20,20 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/sero-cash/go-czero-import/c_czero"
+	"github.com/sero-cash/go-czero-import/c_type"
 	"github.com/sero-cash/go-czero-import/cpt"
 	"github.com/sero-cash/go-czero-import/keys"
 )
 
 func TestCpt(t *testing.T) {
-	rad := cpt.Random()
-	base58 := cpt.Base58Encode(rad[:])
+	rad := c_czero.Random()
+	base58 := c_czero.Base58Encode(rad[:])
 	if base58 == nil {
 		t.FailNow()
 	}
-	rad_ret := keys.Uint256{}
-	e := cpt.Base58Decode(base58, rad_ret[:])
+	rad_ret := c_type.Uint256{}
+	e := c_czero.Base58Decode(base58, rad_ret[:])
 	if e != nil {
 		t.FailNow()
 	}
@@ -41,33 +43,33 @@ func TestCpt(t *testing.T) {
 }
 
 func TestSk(t *testing.T) {
-	seed := cpt.Random()
+	seed := c_czero.Random()
 	sk := keys.Seed2Sk(&seed)
 	fmt.Println(sk)
 }
 
 func TestPKr(t *testing.T) {
-	seed := cpt.Random()
+	seed := c_czero.Random()
 	pk := keys.Seed2Addr(&seed)
-	pkr := keys.Addr2PKr(&pk, nil)
-	pk_58 := cpt.Base58Encode(pk[:])
-	pkr_58 := cpt.Base58Encode(pkr[:])
+	pkr := c_czero.Addr2PKr(&pk, nil)
+	pk_58 := c_czero.Base58Encode(pk[:])
+	pkr_58 := c_czero.Base58Encode(pkr[:])
 
-	p768 := keys.PKr{}
-	p512 := keys.Uint512{}
+	p768 := c_type.PKr{}
+	p512 := c_type.Uint512{}
 
 	cpt.Base58Decode(pk_58, p768[:])
 	cpt.Base58Decode(pkr_58, p512[:])
 
-	p512_str := cpt.Base58Encode(p768[:])
-	p256_str := cpt.Base58Encode(p512[:])
+	p512_str := c_czero.Base58Encode(p768[:])
+	p256_str := c_czero.Base58Encode(p512[:])
 
 	fmt.Println(p512_str)
 	fmt.Println(p256_str)
 }
 
 func TestKeys(t *testing.T) {
-	seed := cpt.Random()
+	seed := c_czero.Random()
 	tk := keys.Seed2Tk(&seed)
 	pk := keys.Seed2Addr(&seed)
 
@@ -75,17 +77,17 @@ func TestKeys(t *testing.T) {
 		t.FailNow()
 	}
 
-	r := cpt.Random()
-	pkr := keys.Addr2PKr(&pk, &r)
+	r := c_czero.Random()
+	pkr := c_czero.Addr2PKr(&pk, &r)
 	is_my_pkr := keys.IsMyPKr(&tk, &pkr)
 	if !is_my_pkr {
 		t.FailNow()
 	}
 
-	seed1 := cpt.Random()
+	seed1 := c_czero.Random()
 	pk1 := keys.Seed2Addr(&seed1)
 	tk1 := keys.Seed2Tk(&seed1)
-	pkr1 := keys.Addr2PKr(&pk1, &r)
+	pkr1 := c_czero.Addr2PKr(&pk1, &r)
 	is_my_pkr = keys.IsMyPKr(&tk1, &pkr1)
 	if !is_my_pkr {
 		t.FailNow()
@@ -95,7 +97,7 @@ func TestKeys(t *testing.T) {
 		t.FailNow()
 	}
 
-	h := cpt.Random()
+	h := c_czero.Random()
 	sign, err := keys.SignPKr(&seed, &h, &pkr)
 	if err != nil {
 		t.FailNow()
@@ -113,7 +115,7 @@ func TestKeys(t *testing.T) {
 }
 
 func TestMain(m *testing.M) {
-	//cpt.ZeroInit("", cpt.NET_Dev)
+	//cpt.ZeroInit("", c_czero.NET_Dev)
 	cpt.ZeroInit_OnlyInOuts()
 	m.Run()
 }
