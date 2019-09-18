@@ -19,6 +19,12 @@ extern void zero_nil(
     unsigned char til[32]
 );
 
+extern void zero_til2cm(
+    const unsigned char tk[ZERO_TK_WIDTH],
+    const unsigned char til[32],
+    unsigned char root_cm[32]
+);
+
 extern char zero_input(
     //---in---
     const unsigned char seed[32],

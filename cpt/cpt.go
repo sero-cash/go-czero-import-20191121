@@ -421,6 +421,15 @@ func GenTil(tk *keys.Uint512, root_cm *keys.Uint256) (til keys.Uint256) {
 	return
 }
 
+func FetchRootCM(tk *keys.Uint512, til *keys.Uint256) (root_cm keys.Uint256) {
+	C.zero_til2cm(
+		(*C.uchar)(unsafe.Pointer(&tk[0])),
+		(*C.uchar)(unsafe.Pointer(&til[0])),
+		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
+	)
+	return
+}
+
 func GenNil(sk *keys.Uint512, root_cm *keys.Uint256) (nil keys.Uint256) {
 	C.zero_nil(
 		(*C.uchar)(unsafe.Pointer(&sk[0])),
