@@ -125,6 +125,16 @@ func (b *Uint128) UnmarshalText(input []byte) error {
 
 type PKr [96]byte
 
+func (self *PKr) IsEndEmpty() bool {
+	end := Uint256{}
+	copy(end[:], self[64:])
+	if end == Empty_Uint256 {
+		return true
+	} else {
+		return false
+	}
+}
+
 func NewPKrByBytes(bs []byte) (ret PKr) {
 	copy(ret[:], bs[:])
 	return
@@ -184,3 +194,11 @@ func RandUint128() (hash Uint128) {
 	rand.Read(hash[:])
 	return
 }
+
+type NetType uint8
+
+const (
+	NET_Dev   NetType = 0
+	NET_Alpha NetType = 1
+	NET_Beta  NetType = 2
+)

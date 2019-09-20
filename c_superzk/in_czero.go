@@ -9,24 +9,19 @@ import "C"
 import (
 	"unsafe"
 
+	"github.com/sero-cash/go-czero-import/c_czero"
+
 	"github.com/sero-cash/go-czero-import/c_type"
 )
 
 func GenCzeroTrace(tk *c_type.Uint512, root_cm *c_type.Uint256) (til c_type.Uint256) {
-	C.zero_til(
-		(*C.uchar)(unsafe.Pointer(&tk[0])),
-		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
-		(*C.uchar)(unsafe.Pointer(&til[0])),
-	)
+	til = c_czero.GenTil(tk, root_cm)
 	return
 }
 
 func GenCzeroNil(sk *c_type.Uint512, root_cm *c_type.Uint256) (til c_type.Uint256) {
-	C.zero_nil(
-		(*C.uchar)(unsafe.Pointer(&sk[0])),
-		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
-		(*C.uchar)(unsafe.Pointer(&til[0])),
-	)
+	copy(til[:], root_cm[:])
+	til = c_czero.GenNil(sk, root_cm)
 	return
 }
 
@@ -35,6 +30,7 @@ func SignCzeroNil(sk *c_type.Uint512, hash *c_type.Uint256, root_cm *c_type.Uint
 }
 
 func VerifyCzeroNil(hash *c_type.Uint256, sign *c_type.Uint256, nil *c_type.Uint256, root_cm *c_type.Uint256, pkr *c_type.PKr) (ret bool) {
+	ret = true
 	return
 }
 

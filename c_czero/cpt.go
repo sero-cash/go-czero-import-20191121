@@ -33,15 +33,7 @@ import (
 
 var init_chan = make(chan bool)
 
-type NetType uint8
-
-const (
-	NET_Dev   NetType = 0
-	NET_Alpha NetType = 1
-	NET_Beta  NetType = 2
-)
-
-func ZeroInit(account_dir string, netType NetType) error {
+func ZeroInit(account_dir string, netType c_type.NetType) error {
 	go func() {
 		C.zero_init(
 			(C.CString)(account_dir),
@@ -69,59 +61,6 @@ func ZeroInit_OnlyInOuts() error {
 	}()
 	<-init_chan
 	return nil
-}
-
-func Random() (out c_type.Uint256) {
-	C.zero_random32(
-		(*C.uchar)(unsafe.Pointer(&out[0])),
-	)
-	return
-}
-
-func Force_Fr(data *c_type.Uint256) (fr c_type.Uint256) {
-	C.zero_force_fr(
-		(*C.uchar)(unsafe.Pointer(&data[0])),
-		(*C.uchar)(unsafe.Pointer(&fr[0])),
-	)
-	return
-}
-
-func Combine(l *c_type.Uint256, r *c_type.Uint256) (out c_type.Uint256) {
-	C.zero_merkle_combine(
-		(*C.uchar)(unsafe.Pointer(&l[0])),
-		(*C.uchar)(unsafe.Pointer(&r[0])),
-		(*C.uchar)(unsafe.Pointer(&out[0])),
-	)
-	return
-}
-
-func Base58Encode(bytes []byte) (ret *string) {
-	str := C.zero_base58_enc(
-		(*C.uchar)(unsafe.Pointer(&bytes[0])),
-		C.int(len(bytes)),
-	)
-	if str != nil {
-		defer C.zero_fee_str(str)
-		s := C.GoString(str)
-		ret = &s
-		return
-	} else {
-		return
-	}
-}
-
-func Base58Decode(str *string, bytes []byte) (e error) {
-	ret := C.zero_base58_dec(
-		C.CString(*str),
-		(*C.uchar)(unsafe.Pointer(&bytes[0])),
-		C.int(len(bytes)),
-	)
-	if ret <= C.int(len(bytes)) {
-		return
-	} else {
-		e = errors.New("base58 can not decode string")
-		return
-	}
 }
 
 type Pre struct {
@@ -279,34 +218,6 @@ func GenOutputProof(desc *OutputDesc) (e error) {
 	}
 }
 
-type EncOutputInfo struct {
-	//---in---
-	Key          c_type.Uint256
-	Tkn_currency c_type.Uint256
-	Tkn_value    c_type.Uint256
-	Tkt_category c_type.Uint256
-	Tkt_value    c_type.Uint256
-	Rsk          c_type.Uint256
-	Memo         c_type.Uint512
-	//---out---
-	Einfo c_type.Einfo
-}
-
-func EncOutput(desc *EncOutputInfo) {
-	C.zero_enc_info(
-		//--in--
-		(*C.uchar)(unsafe.Pointer(&desc.Key[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkn_currency[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkn_value[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkt_category[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkt_value[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Rsk[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Memo[0])),
-		//--out--
-		(*C.uchar)(unsafe.Pointer(&desc.Einfo[0])),
-	)
-}
-
 type InfoDesc struct {
 	//---in---
 	Key   c_type.Uint256
@@ -393,33 +304,6 @@ func GenInputProofBySk(desc *InputDesc) (e error) {
 	ret := C.zero_input_by_sk(
 		//---in---
 		(*C.uchar)(unsafe.Pointer(&desc.Sk[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Pkr[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.RPK[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Einfo[0])),
-		//--
-		C.ulong(desc.Index),
-		(*C.uchar)(unsafe.Pointer(&desc.Anchor[0])),
-		C.ulong(desc.Position),
-		(*C.uchar)(unsafe.Pointer(&desc.Path[0])),
-		//---out---
-		(*C.uchar)(unsafe.Pointer(&desc.Asset_cm_ret[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Ar_ret[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Nil_ret[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Til_ret[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Proof_ret[0])),
-	)
-	if ret == 0 {
-		return
-	} else {
-		e = errors.New("gen input desc error")
-		return
-	}
-}
-
-func GenInputProof(desc *InputDesc) (e error) {
-	ret := C.zero_input(
-		//---in---
-		(*C.uchar)(unsafe.Pointer(&desc.Seed[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.Pkr[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.RPK[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.Einfo[0])),
@@ -575,84 +459,6 @@ type ConfirmPkgDesc struct {
 	Pkg_cm       c_type.Uint256
 }
 
-func ConfirmPkg(desc *ConfirmPkgDesc) (e error) {
-	ret := C.zero_pkg_confirm(
-		(*C.uchar)(unsafe.Pointer(&desc.Tkn_currency[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkn_value[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkt_category[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkt_value[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Memo[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Ar_ret[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Pkg_cm[0])),
-	)
-	if ret == 0 {
-		return
-	} else {
-		e = errors.New("confirm pkg error")
-		return
-	}
-}
-
-type PkgDesc struct {
-	//---in---
-	Key          c_type.Uint256
-	Tkn_currency c_type.Uint256
-	Tkn_value    c_type.Uint256
-	Tkt_category c_type.Uint256
-	Tkt_value    c_type.Uint256
-	Memo         c_type.Uint512
-	//---out---
-	Asset_cm_ret c_type.Uint256
-	Ar_ret       c_type.Uint256
-	Pkg_cm_ret   c_type.Uint256
-	Einfo_ret    c_type.Einfo
-	Proof_ret    c_type.Proof
-}
-
-func GenPkgProof(desc *PkgDesc) (e error) {
-	ret := C.zero_pkg(
-		//---in---
-		(*C.uchar)(unsafe.Pointer(&desc.Key[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkn_currency[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkn_value[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkt_category[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkt_value[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Memo[0])),
-		//---out---
-		(*C.uchar)(unsafe.Pointer(&desc.Asset_cm_ret[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Ar_ret[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Pkg_cm_ret[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Einfo_ret[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Proof_ret[0])),
-	)
-	if ret == 0 {
-		return
-	} else {
-		e = errors.New("gen pkg proof error")
-		return
-	}
-}
-
-type PkgVerifyDesc struct {
-	AssetCM c_type.Uint256
-	PkgCM   c_type.Uint256
-	Proof   c_type.Proof
-}
-
-func VerifyPkg(desc *PkgVerifyDesc) (e error) {
-	ret := C.zero_pkg_verify(
-		(*C.uchar)(unsafe.Pointer(&desc.AssetCM[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.PkgCM[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Proof[0])),
-	)
-	if ret == 0 {
-		return
-	} else {
-		e = errors.New("verify pkg error")
-		return
-	}
-}
-
 type InputSDesc struct {
 	//---in0---
 	Sk c_type.Uint512
@@ -672,26 +478,6 @@ func GenInputSProofBySk(desc *InputSDesc) (e error) {
 		//---in---
 		(*C.uchar)(unsafe.Pointer(&desc.Ehash[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.Sk[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Pkr[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.RootCM[0])),
-		//---out---
-		(*C.uchar)(unsafe.Pointer(&desc.Nil_ret[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Til_ret[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Sign_ret[0])),
-	)
-	if ret == 0 {
-		return
-	} else {
-		e = errors.New("gen input s desc error")
-		return
-	}
-}
-
-func GenInputSProof(desc *InputSDesc) (e error) {
-	ret := C.zero_input_s(
-		//---in---
-		(*C.uchar)(unsafe.Pointer(&desc.Ehash[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Seed[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.Pkr[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.RootCM[0])),
 		//---out---
@@ -731,46 +517,4 @@ func VerifyInputS(desc *VerifyInputSDesc) (e error) {
 		e = errors.New("gen input desc error")
 		return
 	}
-}
-
-func Miner_Hash_0(in []byte, num uint64) []byte {
-	var bs [64]byte
-	if num >= seroparam.VP1() {
-		C.zero_hash_2_enter(
-			(*C.uchar)(unsafe.Pointer(&in[0])),
-			(*C.uchar)(unsafe.Pointer(&bs[0])),
-		)
-	} else if num >= seroparam.SIP1() {
-		C.zero_hash_1_enter(
-			(*C.uchar)(unsafe.Pointer(&in[0])),
-			(*C.uchar)(unsafe.Pointer(&bs[0])),
-		)
-	} else {
-		C.zero_hash_0_enter(
-			(*C.uchar)(unsafe.Pointer(&in[0])),
-			(*C.uchar)(unsafe.Pointer(&bs[0])),
-		)
-	}
-	return bs[:]
-}
-
-func Miner_Hash_1(in []byte, num uint64) []byte {
-	var bs [32]byte
-	if num >= seroparam.VP1() {
-		C.zero_hash_2_leave(
-			(*C.uchar)(unsafe.Pointer(&in[0])),
-			(*C.uchar)(unsafe.Pointer(&bs[0])),
-		)
-	} else if num >= seroparam.SIP1() {
-		C.zero_hash_1_leave(
-			(*C.uchar)(unsafe.Pointer(&in[0])),
-			(*C.uchar)(unsafe.Pointer(&bs[0])),
-		)
-	} else {
-		C.zero_hash_0_leave(
-			(*C.uchar)(unsafe.Pointer(&in[0])),
-			(*C.uchar)(unsafe.Pointer(&bs[0])),
-		)
-	}
-	return bs[:]
 }
