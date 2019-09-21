@@ -10,7 +10,7 @@ import (
 	"github.com/sero-cash/go-czero-import/c_type"
 )
 
-func GenNil(tk *c_type.Uint512, root_cm *c_type.Uint256, pkr *c_type.PKr) (ret c_type.Uint256) {
+func GenNil(tk *c_type.Tk, root_cm *c_type.Uint256, pkr *c_type.PKr) (ret c_type.Uint256) {
 	assertPKr(pkr)
 	pkr = ClearPKr(pkr)
 	copy(ret[:], root_cm[:])
@@ -18,7 +18,7 @@ func GenNil(tk *c_type.Uint512, root_cm *c_type.Uint256, pkr *c_type.PKr) (ret c
 	return
 }
 
-func SignNil(tk *c_type.Uint512, hash *c_type.Uint256, root_cm *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
+func SignNil(tk *c_type.Tk, hash *c_type.Uint256, root_cm *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
 	assertPKr(pkr)
 	return
 }

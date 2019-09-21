@@ -14,7 +14,7 @@ import (
 	"github.com/sero-cash/go-czero-import/c_type"
 )
 
-func GenCzeroTrace(tk *c_type.Uint512, root_cm *c_type.Uint256) (til c_type.Uint256) {
+func GenCzeroTrace(tk *c_type.Tk, root_cm *c_type.Uint256) (til c_type.Uint256) {
 	til = c_czero.GenTil(tk, root_cm)
 	return
 }
@@ -34,7 +34,7 @@ func VerifyCzeroNil(hash *c_type.Uint256, sign *c_type.Uint256, nil *c_type.Uint
 	return
 }
 
-func CzeroIsMyPKr(tk *c_type.Uint512, pkr *c_type.PKr) (succ bool) {
+func CzeroIsMyPKr(tk *c_type.Tk, pkr *c_type.PKr) (succ bool) {
 	ret := C.zero_ismy_pkr(
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
@@ -48,7 +48,7 @@ func CzeroIsMyPKr(tk *c_type.Uint512, pkr *c_type.PKr) (succ bool) {
 	}
 }
 
-func FetchCzeroKey(tk *c_type.Uint512, rpk *c_type.Uint256) (ret c_type.Uint256, flag bool) {
+func FetchCzeroKey(tk *c_type.Tk, rpk *c_type.Uint256) (ret c_type.Uint256, flag bool) {
 	f := C.zero_fetch_key(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
 		(*C.uchar)(unsafe.Pointer(&rpk[0])),

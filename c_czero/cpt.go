@@ -137,22 +137,19 @@ func GenRootCM(
 }
 
 type ConfirmOutputDesc struct {
-	Tkn_currency c_type.Uint256
-	Tkn_value    c_type.Uint256
-	Tkt_category c_type.Uint256
-	Tkt_value    c_type.Uint256
-	Memo         c_type.Uint512
-	Pkr          c_type.PKr
-	Rsk          c_type.Uint256
-	Out_cm       c_type.Uint256
+	Asset  c_type.Asset
+	Memo   c_type.Uint512
+	Pkr    c_type.PKr
+	Rsk    c_type.Uint256
+	Out_cm c_type.Uint256
 }
 
 func ConfirmOutput(desc *ConfirmOutputDesc) (e error) {
 	ret := C.zero_output_confirm(
-		(*C.uchar)(unsafe.Pointer(&desc.Tkn_currency[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkn_value[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkt_category[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkt_value[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkn_currency[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkn_value[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkt_category[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkt_value[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.Memo[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.Pkr[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.Rsk[0])),
@@ -224,12 +221,9 @@ type InfoDesc struct {
 	Flag  bool
 	Einfo c_type.Einfo
 	//---out---
-	Tkn_currency c_type.Uint256
-	Tkn_value    c_type.Uint256
-	Tkt_category c_type.Uint256
-	Tkt_value    c_type.Uint256
-	Rsk          c_type.Uint256
-	Memo         c_type.Uint512
+	Asset c_type.Asset
+	Rsk   c_type.Uint256
+	Memo  c_type.Uint512
 }
 
 func DecOutput(desc *InfoDesc) {
@@ -243,16 +237,16 @@ func DecOutput(desc *InfoDesc) {
 		flag,
 		(*C.uchar)(unsafe.Pointer(&desc.Einfo[0])),
 		//--out--
-		(*C.uchar)(unsafe.Pointer(&desc.Tkn_currency[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkn_value[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkt_category[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkt_value[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkn_currency[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkn_value[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkt_category[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkt_value[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.Rsk[0])),
 		(*C.uchar)(unsafe.Pointer(&desc.Memo[0])),
 	)
 }
 
-func GenTil(tk *c_type.Uint512, root_cm *c_type.Uint256) (til c_type.Uint256) {
+func GenTil(tk *c_type.Tk, root_cm *c_type.Uint256) (til c_type.Uint256) {
 	C.zero_til(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
 		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
@@ -261,7 +255,7 @@ func GenTil(tk *c_type.Uint512, root_cm *c_type.Uint256) (til c_type.Uint256) {
 	return
 }
 
-func FetchRootCM(tk *c_type.Uint512, til *c_type.Uint256) (root_cm c_type.Uint256) {
+func FetchRootCM(tk *c_type.Tk, til *c_type.Uint256) (root_cm c_type.Uint256) {
 	C.zero_til2cm(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
 		(*C.uchar)(unsafe.Pointer(&til[0])),

@@ -37,7 +37,7 @@ type DecInfoDesc struct {
 	Einfo c_type.Einfo
 	//---out---
 	Asset_ret c_type.Asset
-	Memo      c_type.Uint512
+	Memo_ret  c_type.Uint512
 	Ar_ret    c_type.Uint256
 }
 
@@ -51,7 +51,7 @@ func DecOutput(desc *DecInfoDesc) {
 	len += 32
 	copy(desc.Asset_ret.Tkt_value[:], desc.Einfo[len:])
 	len += 32
-	copy(desc.Memo[:], desc.Einfo[len:])
+	copy(desc.Memo_ret[:], desc.Einfo[len:])
 	len += 64
 	copy(desc.Ar_ret[:], desc.Einfo[len:])
 }

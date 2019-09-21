@@ -7,12 +7,12 @@ import (
 	"github.com/sero-cash/go-czero-import/c_type"
 )
 
-func Seed2Tk(seed *c_type.Uint256) (tk c_type.Uint512) {
+func Seed2Tk(seed *c_type.Uint256) (tk c_type.Tk) {
 	sk := c_superzk.Seed2Sk(seed)
 	return c_superzk.Sk2Tk(&sk)
 }
 
-func Sk2Tk(sk *c_type.Uint512) (tk c_type.Uint512) {
+func Sk2Tk(sk *c_type.Uint512) (tk c_type.Tk) {
 	return c_superzk.Sk2Tk(sk)
 }
 
@@ -48,7 +48,7 @@ func HashPKr(pkr *c_type.PKr) (ret [20]byte) {
 	return c_superzk.HashPKr(pkr)
 }
 
-func IsMyPKr(tk *c_type.Uint512, pkr *c_type.PKr) (succ bool) {
+func IsMyPKr(tk *c_type.Tk, pkr *c_type.PKr) (succ bool) {
 	if c_superzk.IsSzkPKr(pkr) {
 		return c_superzk.IsMyPKr(tk, pkr)
 	} else {

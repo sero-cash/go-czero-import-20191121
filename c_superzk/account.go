@@ -61,7 +61,7 @@ func ClearNil(pkr *c_type.Uint256) (ret *c_type.Uint256) {
 	return
 }
 
-func Tk2Pk(tk *c_type.Uint512) (pk c_type.Uint512) {
+func Tk2Pk(tk *c_type.Tk) (pk c_type.Uint512) {
 	copy(pk[:], tk[:])
 	SetFlag(pk[:])
 	return
@@ -102,7 +102,7 @@ func Pk2PKr(addr *c_type.Uint512, r *c_type.Uint256) (pkr c_type.PKr) {
 	return
 }
 
-func Sk2Tk(sk *c_type.Uint512) (tk c_type.Uint512) {
+func Sk2Tk(sk *c_type.Uint512) (tk c_type.Tk) {
 	C.zero_sk2tk(
 		(*C.uchar)(unsafe.Pointer(&sk[0])),
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
@@ -141,7 +141,7 @@ func IsPKrValid(pkr *c_type.PKr) bool {
 	return true
 }
 
-func IsMyPKr(tk *c_type.Uint512, pkr *c_type.PKr) (succ bool) {
+func IsMyPKr(tk *c_type.Tk, pkr *c_type.PKr) (succ bool) {
 	assertPKr(pkr)
 	pkr = ClearPKr(pkr)
 	if bytes.Compare(tk[:], pkr[:64]) == 0 {
@@ -156,7 +156,7 @@ func GenKey(pkr *c_type.PKr) (key c_type.Uint256, rpk c_type.Uint256, rsk c_type
 	return
 }
 
-func FetchKey(pkr *c_type.PKr, tk *c_type.Uint512, rpk *c_type.Uint256) (ret c_type.Uint256) {
+func FetchKey(pkr *c_type.PKr, tk *c_type.Tk, rpk *c_type.Uint256) (ret c_type.Uint256) {
 	assertPKr(pkr)
 	pkr = ClearPKr(pkr)
 	return

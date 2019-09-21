@@ -29,7 +29,7 @@ import (
 	"github.com/sero-cash/go-czero-import/c_type"
 )
 
-func Tk2Pk(tk *c_type.Uint512) (pk c_type.Uint512) {
+func Tk2Pk(tk *c_type.Tk) (pk c_type.Uint512) {
 	C.zero_tk2pk(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
 		(*C.uchar)(unsafe.Pointer(&pk[0])),
@@ -67,7 +67,7 @@ func Pk2PKr(addr *c_type.Uint512, r *c_type.Uint256) (pkr c_type.PKr) {
 	return
 }
 
-func IsMyPKr(tk *c_type.Uint512, pkr *c_type.PKr) (succ bool) {
+func IsMyPKr(tk *c_type.Tk, pkr *c_type.PKr) (succ bool) {
 	ret := C.zero_ismy_pkr(
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
@@ -81,7 +81,7 @@ func IsMyPKr(tk *c_type.Uint512, pkr *c_type.PKr) (succ bool) {
 	}
 }
 
-func FetchKey(tk *c_type.Uint512, rpk *c_type.Uint256) (ret c_type.Uint256, flag bool) {
+func FetchKey(tk *c_type.Tk, rpk *c_type.Uint256) (ret c_type.Uint256, flag bool) {
 	f := C.zero_fetch_key(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
 		(*C.uchar)(unsafe.Pointer(&rpk[0])),
