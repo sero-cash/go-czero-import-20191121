@@ -29,6 +29,14 @@ import (
 	"github.com/sero-cash/go-czero-import/c_type"
 )
 
+func HashPKr(pkr *c_type.PKr) (ret [20]byte) {
+	C.zero_hpkr(
+		(*C.uchar)(unsafe.Pointer(&pkr[0])),
+		(*C.uchar)(unsafe.Pointer(&ret[0])),
+	)
+	return
+}
+
 func Tk2Pk(tk *c_type.Tk) (pk c_type.Uint512) {
 	C.zero_tk2pk(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),

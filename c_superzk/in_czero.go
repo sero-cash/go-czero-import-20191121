@@ -1,14 +1,6 @@
 package c_superzk
 
-/*
-
-#include "zero.h"
-
-*/
-import "C"
 import (
-	"unsafe"
-
 	"github.com/sero-cash/go-czero-import/c_czero"
 
 	"github.com/sero-cash/go-czero-import/c_type"
@@ -35,29 +27,9 @@ func VerifyCzeroNil(hash *c_type.Uint256, sign *c_type.Uint256, nil *c_type.Uint
 }
 
 func CzeroIsMyPKr(tk *c_type.Tk, pkr *c_type.PKr) (succ bool) {
-	ret := C.zero_ismy_pkr(
-		(*C.uchar)(unsafe.Pointer(&pkr[0])),
-		(*C.uchar)(unsafe.Pointer(&tk[0])),
-	)
-	if ret == C.char(0) {
-		succ = true
-		return
-	} else {
-		succ = false
-		return
-	}
+	return c_czero.IsMyPKr(tk, pkr)
 }
 
 func FetchCzeroKey(tk *c_type.Tk, rpk *c_type.Uint256) (ret c_type.Uint256, flag bool) {
-	f := C.zero_fetch_key(
-		(*C.uchar)(unsafe.Pointer(&tk[0])),
-		(*C.uchar)(unsafe.Pointer(&rpk[0])),
-		(*C.uchar)(unsafe.Pointer(&ret[0])),
-	)
-	if f == C.char(0) {
-		flag = false
-	} else {
-		flag = true
-	}
-	return
+	return c_czero.FetchKey(tk, rpk)
 }

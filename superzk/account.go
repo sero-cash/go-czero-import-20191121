@@ -9,11 +9,13 @@ import (
 
 func Seed2Tk(seed *c_type.Uint256) (tk c_type.Tk) {
 	sk := c_superzk.Seed2Sk(seed)
-	return c_superzk.Sk2Tk(&sk)
+	tk, _ = c_superzk.Sk2Tk(&sk)
+	return
 }
 
 func Sk2Tk(sk *c_type.Uint512) (tk c_type.Tk) {
-	return c_superzk.Sk2Tk(sk)
+	tk, _ = c_superzk.Sk2Tk(sk)
+	return
 }
 
 func Seed2Sk(seed *c_type.Uint256) (sk c_type.Uint512) {
@@ -22,7 +24,8 @@ func Seed2Sk(seed *c_type.Uint256) (sk c_type.Uint512) {
 
 func Pk2PKr(addr *c_type.Uint512, r *c_type.Uint256) (pkr c_type.PKr) {
 	if c_superzk.IsSzkPK(addr) {
-		return c_superzk.Pk2PKr(addr, r)
+		pkr, _ = c_superzk.Pk2PKr(addr, r)
+		return
 	} else {
 		return c_czero.Pk2PKr(addr, r)
 	}
@@ -45,7 +48,7 @@ func IsPKrValid(pkr *c_type.PKr) bool {
 }
 
 func HashPKr(pkr *c_type.PKr) (ret [20]byte) {
-	return c_superzk.HashPKr(pkr)
+	return c_czero.HashPKr(pkr)
 }
 
 func IsMyPKr(tk *c_type.Tk, pkr *c_type.PKr) (succ bool) {

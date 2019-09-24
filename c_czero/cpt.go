@@ -103,19 +103,16 @@ type Common struct {
 }
 
 func GenOutCM(
-	tkn_currency *c_type.Uint256,
-	tkn_value *c_type.Uint256,
-	tkt_category *c_type.Uint256,
-	tkt_value *c_type.Uint256,
+	asset c_type.Asset,
 	memo *c_type.Uint512,
 	pkr *c_type.PKr,
 	rsk *c_type.Uint256,
 ) (cm c_type.Uint256) {
 	C.zero_out_commitment(
-		(*C.uchar)(unsafe.Pointer(&tkn_currency[0])),
-		(*C.uchar)(unsafe.Pointer(&tkn_value[0])),
-		(*C.uchar)(unsafe.Pointer(&tkt_category[0])),
-		(*C.uchar)(unsafe.Pointer(&tkt_value[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkn_currency[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkn_value[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkt_category[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkt_value[0])),
 		(*C.uchar)(unsafe.Pointer(&memo[0])),
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),
 		(*C.uchar)(unsafe.Pointer(&rsk[0])),

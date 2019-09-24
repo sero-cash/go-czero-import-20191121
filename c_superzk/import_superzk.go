@@ -2,9 +2,9 @@ package c_superzk
 
 /*
 
-#cgo CFLAGS: -I ../czero/include
+#cgo CFLAGS: -I ../czero/szk_include
 
-#cgo LDFLAGS: -L ../czero/lib -lczero
+#cgo LDFLAGS: -L ../czero/lib -lsuperzkd
 
 */
 import "C"

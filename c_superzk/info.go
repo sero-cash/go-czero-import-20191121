@@ -2,11 +2,14 @@ package c_superzk
 
 /*
 
-#include "zero.h"
+#include "csuperzk.h"
 
 */
 import "C"
 import (
+	"fmt"
+	"unsafe"
+
 	"github.com/sero-cash/go-czero-import/c_type"
 )
 
@@ -20,15 +23,22 @@ type EncInfoDesc struct {
 	Einfo c_type.Einfo
 }
 
-func EncOutput(desc *EncInfoDesc) {
-	bytes := []byte{}
-	bytes = append(bytes, desc.Asset.Tkn_currency[:]...)
-	bytes = append(bytes, desc.Asset.Tkn_value[:]...)
-	bytes = append(bytes, desc.Asset.Tkt_category[:]...)
-	bytes = append(bytes, desc.Asset.Tkt_value[:]...)
-	bytes = append(bytes, desc.Memo[:]...)
-	bytes = append(bytes, desc.Ar[:]...)
-	copy(desc.Einfo[:], bytes)
+func EncOutput(desc *EncInfoDesc) (e error) {
+	ret := C.superzk_enc_info(
+		(*C.uchar)(unsafe.Pointer(&desc.Key[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkn_currency[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkn_value[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkt_category[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkt_value[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Memo[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Ar[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Einfo[0])),
+	)
+	if ret != C.int(0) {
+		e = fmt.Errorf("enc info error: %d", int(ret))
+		return
+	}
+	return
 }
 
 type DecInfoDesc struct {
@@ -41,17 +51,53 @@ type DecInfoDesc struct {
 	Ar_ret    c_type.Uint256
 }
 
-func DecOutput(desc *DecInfoDesc) {
-	len := 0
-	copy(desc.Asset_ret.Tkn_currency[:], desc.Einfo[len:])
-	len += 32
-	copy(desc.Asset_ret.Tkn_value[:], desc.Einfo[len:])
-	len += 32
-	copy(desc.Asset_ret.Tkt_category[:], desc.Einfo[len:])
-	len += 32
-	copy(desc.Asset_ret.Tkt_value[:], desc.Einfo[len:])
-	len += 32
-	copy(desc.Memo_ret[:], desc.Einfo[len:])
-	len += 64
-	copy(desc.Ar_ret[:], desc.Einfo[len:])
+func DecOutput(desc *DecInfoDesc) (e error) {
+	ret := C.superzk_dec_info(
+		(*C.uchar)(unsafe.Pointer(&desc.Key[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Einfo[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset_ret.Tkn_currency[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset_ret.Tkn_value[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset_ret.Tkt_category[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset_ret.Tkt_value[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Memo_ret[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Ar_ret[0])),
+	)
+	if ret != C.int(0) {
+		e = fmt.Errorf("dec info error: %d", int(ret))
+		return
+	}
+	return
+}
+
+func GenKey(pkr *c_type.PKr) (key c_type.Uint256, rpk c_type.Uint256, rsk c_type.Uint256, e error) {
+	assertPKr(pkr)
+	pkr = ClearPKr(pkr)
+	rsk = c_type.RandUint256()
+	ret := C.superzk_gen_key(
+		(*C.uchar)(unsafe.Pointer(&pkr[0])),
+		(*C.uchar)(unsafe.Pointer(&rsk[0])),
+		(*C.uchar)(unsafe.Pointer(&key[0])),
+		(*C.uchar)(unsafe.Pointer(&rpk[0])),
+	)
+	if ret != C.int(0) {
+		e = fmt.Errorf("gen key error: %d", int(ret))
+		return
+	}
+	return
+}
+
+func FetchKey(pkr *c_type.PKr, tk *c_type.Tk, rpk *c_type.Uint256) (key c_type.Uint256, e error) {
+	assertPKr(pkr)
+	pkr = ClearPKr(pkr)
+	ret := C.superzk_fetch_key(
+		(*C.uchar)(unsafe.Pointer(&pkr[0])),
+		(*C.uchar)(unsafe.Pointer(&tk[0])),
+		(*C.uchar)(unsafe.Pointer(&rpk[0])),
+		(*C.uchar)(unsafe.Pointer(&key[0])),
+	)
+	if ret != C.int(0) {
+		e = fmt.Errorf("fetch key error: %d", int(ret))
+		return
+	}
+	return
 }
