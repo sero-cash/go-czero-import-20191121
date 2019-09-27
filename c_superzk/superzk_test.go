@@ -5,14 +5,11 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/sero-cash/go-czero-import/c_czero"
-
 	"github.com/sero-cash/go-czero-import/c_type"
 )
 
 func TestMain(m *testing.M) {
 	InitParams()
-	c_czero.ZeroInit_NoCircuit()
 	m.Run()
 }
 
@@ -58,7 +55,7 @@ func TestAccount(t *testing.T) {
 	}
 
 	h := c_type.RandUint256()
-	sign, e := SignPKrBySk(&sk, &h, &pkr)
+	sign, e := SignPKr(&sk, &h, &pkr)
 	if e != nil {
 		t.Fatal(e)
 	}

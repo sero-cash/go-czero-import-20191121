@@ -59,9 +59,9 @@ func IsMyPKr(tk *c_type.Tk, pkr *c_type.PKr) (succ bool) {
 	}
 }
 
-func SignPKrBySk(sk *c_type.Uint512, data *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
+func SignPKr(sk *c_type.Uint512, data *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
 	if c_superzk.IsSzkPKr(pkr) {
-		return c_superzk.SignPKrBySk(sk, data, pkr)
+		return c_superzk.SignPKr(sk, data, pkr)
 	} else {
 		return c_czero.SignPKrBySk(sk, data, pkr)
 	}

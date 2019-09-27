@@ -10,16 +10,13 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/sero-cash/go-czero-import/c_czero"
-
 	"github.com/sero-cash/go-czero-import/c_type"
 )
 
 func GenZPKa(pkr *c_type.PKr) (zpka c_type.Uint256, a c_type.Uint256, e error) {
 	assertPKr(pkr)
 	pkr = ClearPKr(pkr)
-	a = c_type.RandUint256()
-	a = c_czero.Force_Fr(&a)
+	a = RandomFr()
 	ret := C.superzk_gen_zpka(
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),
 		(*C.uchar)(unsafe.Pointer(&a[0])),
@@ -61,7 +58,7 @@ func VerifyZPKa(data *c_type.Uint256, sign *c_type.Uint512, zpka *c_type.Uint256
 	return true
 }
 
-func SignPKrBySk(sk *c_type.Uint512, data *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
+func SignPKr(sk *c_type.Uint512, data *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
 	assertPKr(pkr)
 	pkr = ClearPKr(pkr)
 	ret := C.superzk_sign_pkr(

@@ -9,22 +9,11 @@
 extern "C" {
 #endif
 
-/*
-#include "./light.h"
-#include "./keys.h"
-#include "./output.h"
-#include "./license.h"
-#include "./info.h"
-#include "./input.h"
-#include "./balance.h"
-#include "./pkg.h"
-#include "./input_s.h"
- */
-
 #include "account.h"
 #include "info.h"
 #include "commitment.h"
 #include "asset.h"
+#include "czero.h"
 
 extern void superzk_init_params();
 extern void superzk_random_pt(unsigned char pt[32]);
