@@ -101,12 +101,12 @@ extern int superzk_sign_nil(
     const unsigned char h[32],
     const unsigned char root_cm[32],
     const unsigned char pkr[SZK_PKr_WIDTH],
-    unsigned char sign[SZK_SIGN_WIDTH]
+    unsigned char sign[SZK_NSIGN_WIDTH]
 );
 
 extern int superzk_verify_nil(
     const unsigned char h[32],
-    const unsigned char sign[SZK_SIGN_WIDTH],
+    const unsigned char sign[SZK_NSIGN_WIDTH],
     const unsigned char nil[32],
     const unsigned char root_cm[32],
     const unsigned char pkr[SZK_PKr_WIDTH]

@@ -369,20 +369,16 @@ func VerifyBalance(desc *c_type.BalanceDesc) (e error) {
 }
 
 type AssetDesc struct {
-	Tkn_currency c_type.Uint256
-	Tkn_value    c_type.Uint256
-	Tkt_category c_type.Uint256
-	Tkt_value    c_type.Uint256
-	Asset_cc     c_type.Uint256
-	Asset_cm     c_type.Uint256
+	Asset    c_type.Asset
+	Asset_cc c_type.Uint256
 }
 
 func GenAssetCC(desc *AssetDesc) {
 	C.zero_gen_asset_cc(
-		(*C.uchar)(unsafe.Pointer(&desc.Tkn_currency[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkn_value[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkt_category[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Tkt_value[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkn_currency[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkn_value[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkt_category[0])),
+		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkt_value[0])),
 		//--out--
 		(*C.uchar)(unsafe.Pointer(&desc.Asset_cc[0])),
 	)

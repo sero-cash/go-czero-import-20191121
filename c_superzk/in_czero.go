@@ -175,7 +175,7 @@ func Czero_genTrace(tk *c_type.Tk, root_cm *c_type.Uint256) (trace c_type.Uint25
 	return
 }
 
-func Czero_signNil(h *c_type.Uint256, sk *c_type.Uint512, pkr *c_type.PKr, root_cm *c_type.Uint256) (sign c_type.Uint512, e error) {
+func Czero_signNil(h *c_type.Uint256, sk *c_type.Uint512, pkr *c_type.PKr, root_cm *c_type.Uint256) (sign c_type.SignN, e error) {
 	ret := C.czero_sign_nil(
 		(*C.uchar)(unsafe.Pointer(&h[0])),
 		(*C.uchar)(unsafe.Pointer(&sk[0])),
@@ -190,7 +190,7 @@ func Czero_signNil(h *c_type.Uint256, sk *c_type.Uint512, pkr *c_type.PKr, root_
 	return
 }
 
-func Czero_verifyNil(h *c_type.Uint256, sign *c_type.Uint512, pkr *c_type.PKr, root_cm *c_type.Uint256, nl *c_type.Uint256) (e error) {
+func Czero_verifyNil(h *c_type.Uint256, sign *c_type.SignN, pkr *c_type.PKr, root_cm *c_type.Uint256, nl *c_type.Uint256) (e error) {
 	ret := C.czero_verify_nil(
 		(*C.uchar)(unsafe.Pointer(&h[0])),
 		(*C.uchar)(unsafe.Pointer(&sign[0])),

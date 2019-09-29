@@ -73,12 +73,12 @@ extern int czero_sign_nil(
     const unsigned char pkr[SZK_PKr_WIDTH],
     const unsigned char root_cm[32],
     //---out---
-    unsigned char sign_ret[64]
+    unsigned char sign_ret[SZK_NSIGN_WIDTH]
 );
 
 extern int czero_verify_nil(
     const unsigned char hash[32],
-    const unsigned char sign[SZK_SIGN_WIDTH],
+    const unsigned char sign[SZK_NSIGN_WIDTH],
     const unsigned char pkr[SZK_PKr_WIDTH],
     const unsigned char root_cm[32],
     const unsigned char nil[32]

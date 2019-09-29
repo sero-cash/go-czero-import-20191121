@@ -30,7 +30,7 @@ func GenNil(tk *c_type.Tk, root_cm *c_type.Uint256, pkr *c_type.PKr) (nil c_type
 	return
 }
 
-func SignNil(tk *c_type.Tk, hash *c_type.Uint256, root_cm *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
+func SignNil(tk *c_type.Tk, hash *c_type.Uint256, root_cm *c_type.Uint256, pkr *c_type.PKr) (sign c_type.SignN, e error) {
 	assertPKr(pkr)
 	pkr = ClearPKr(pkr)
 	ret := C.superzk_sign_nil(
@@ -47,7 +47,7 @@ func SignNil(tk *c_type.Tk, hash *c_type.Uint256, root_cm *c_type.Uint256, pkr *
 	return
 }
 
-func VerifyNil(hash *c_type.Uint256, sign *c_type.Uint512, nl *c_type.Uint256, root_cm *c_type.Uint256, pkr *c_type.PKr) error {
+func VerifyNil(hash *c_type.Uint256, sign *c_type.SignN, nl *c_type.Uint256, root_cm *c_type.Uint256, pkr *c_type.PKr) error {
 	assertNil(nl)
 	assertPKr(pkr)
 	pkr = ClearPKr(pkr)
