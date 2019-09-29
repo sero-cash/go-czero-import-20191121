@@ -40,26 +40,26 @@ func IsTktValid(category *c_type.Uint256, value *c_type.Uint256) (e error) {
 	return
 }
 
-type AssetDesc struct {
-	Asset        c_type.Asset
-	Ar           c_type.Uint256
-	Asset_cc_ret c_type.Uint256
-	Asset_cm_ret c_type.Uint256
-}
-
-func GenAssetCC(desc *AssetDesc) (e error) {
+func GenAssetCC(asset *c_type.Asset) (cc c_type.Uint256, e error) {
 	ret := C.superzk_gen_asset_cc(
-		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkn_currency[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkn_value[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkt_category[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Asset.Tkt_value[0])),
-		(*C.uchar)(unsafe.Pointer(&desc.Asset_cc_ret[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkn_currency[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkn_value[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkt_category[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkt_value[0])),
+		(*C.uchar)(unsafe.Pointer(&cc[0])),
 	)
 	if ret != C.int(0) {
 		e = fmt.Errorf("gen asset cc error: %d", int(ret))
 		return
 	}
 	return
+}
+
+type AssetDesc struct {
+	Asset        c_type.Asset
+	Ar           c_type.Uint256
+	Asset_cc_ret c_type.Uint256
+	Asset_cm_ret c_type.Uint256
 }
 
 func GenAssetCM(desc *AssetDesc) (e error) {

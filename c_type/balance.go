@@ -18,3 +18,7 @@ type Asset struct {
 	Tkt_category Uint256
 	Tkt_value    Uint256
 }
+
+func (self Asset) NewRef() (ret *Asset) {
+	return &self
+}
