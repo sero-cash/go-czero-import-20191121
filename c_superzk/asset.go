@@ -55,6 +55,22 @@ func GenAssetCC(asset *c_type.Asset) (cc c_type.Uint256, e error) {
 	return
 }
 
+func GenAssetCM_PC(asset *c_type.Asset, ar *c_type.Uint256) (cm c_type.Uint256, e error) {
+	ret := C.superzk_gen_asset_cm(
+		(*C.uchar)(unsafe.Pointer(&asset.Tkn_currency[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkn_value[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkt_category[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkt_value[0])),
+		(*C.uchar)(unsafe.Pointer(&ar[0])),
+		(*C.uchar)(unsafe.Pointer(&cm[0])),
+	)
+	if ret != C.int(0) {
+		e = fmt.Errorf("gen asset cc error: %d", int(ret))
+		return
+	}
+	return
+}
+
 type AssetDesc struct {
 	Asset        c_type.Asset
 	Ar           c_type.Uint256
