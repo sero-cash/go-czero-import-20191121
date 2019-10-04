@@ -1,6 +1,7 @@
 package c_superzk
 
 import (
+	"encoding/hex"
 	"fmt"
 	"math/big"
 	"testing"
@@ -15,23 +16,29 @@ func TestMain(m *testing.M) {
 
 func TestAccount(t *testing.T) {
 	seed := c_type.RandUint256()
+	fmt.Println("seed: " + hex.EncodeToString(seed[:]))
 	sk := Seed2Sk(&seed)
+	fmt.Println("sk: " + hex.EncodeToString(sk[:]))
 	tk, e := Sk2Tk(&sk)
 	if e != nil {
 		t.Fatal(e)
 	}
+	fmt.Println("tk: " + hex.EncodeToString(tk[:]))
 	pk, e := Tk2Pk(&tk)
 	if e != nil {
 		t.Fatal(e)
 	}
+	fmt.Println("pk: " + hex.EncodeToString(pk[:]))
 	if !IsPKValid(&pk) {
 		t.Fatal("is pk valid error")
 	}
 	r := c_type.RandUint256()
+	fmt.Println("r: " + hex.EncodeToString(r[:]))
 	pkr, e := Pk2PKr(&pk, &r)
 	if e != nil {
 		t.Fatal(e)
 	}
+	fmt.Println("pkr: " + hex.EncodeToString(pkr[:]))
 	if !IsPKrValid(&pkr) {
 		t.Fatal("is pkr valid error")
 	}
@@ -161,9 +168,9 @@ func TestAsset(t *testing.T) {
 		newUint256ByText("TKT"),
 		newUint256ByInt(100),
 	}
-	oin_desc := AssetDesc{}
-	oin_desc.Asset = oin_asset
-	if e := GenAssetCC(&oin_desc); e != nil {
+	var e error
+	var in_cc c_type.Uint256
+	if in_cc, e = GenAssetCC(&oin_asset); e != nil {
 		t.Fatal(e)
 	}
 
@@ -173,9 +180,9 @@ func TestAsset(t *testing.T) {
 		newUint256ByText("TKT"),
 		newUint256ByInt(100),
 	}
-	oout_desc := AssetDesc{}
-	oout_desc.Asset = oout_asset
-	if e := GenAssetCC(&oout_desc); e != nil {
+
+	var out_cc c_type.Uint256
+	if out_cc, e = GenAssetCC(&oout_asset); e != nil {
 		t.Fatal(e)
 	}
 
@@ -208,8 +215,8 @@ func TestAsset(t *testing.T) {
 	balance_dec := c_type.BalanceDesc{}
 	balance_dec.Hash = c_type.RandUint256()
 
-	balance_dec.Oin_accs = append(balance_dec.Oin_accs, oin_desc.Asset_cc_ret[:]...)
-	balance_dec.Oout_accs = append(balance_dec.Oout_accs, oout_desc.Asset_cc_ret[:]...)
+	balance_dec.Oin_accs = append(balance_dec.Oin_accs, in_cc[:]...)
+	balance_dec.Oout_accs = append(balance_dec.Oout_accs, out_cc[:]...)
 
 	balance_dec.Zin_acms = append(balance_dec.Zin_acms, zin_desc.Asset_cm_ret[:]...)
 	balance_dec.Zin_ars = append(balance_dec.Zin_ars, zin_desc.Ar[:]...)
