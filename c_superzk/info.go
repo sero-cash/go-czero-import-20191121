@@ -13,6 +13,24 @@ import (
 	"github.com/sero-cash/go-czero-import/c_type"
 )
 
+func EncInfo(key *c_type.Uint256, asset *c_type.Asset, memo *c_type.Uint512, ar *c_type.Uint256) (einfo c_type.Einfo, e error) {
+	ret := C.superzk_enc_info(
+		(*C.uchar)(unsafe.Pointer(&key[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkn_currency[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkn_value[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkt_category[0])),
+		(*C.uchar)(unsafe.Pointer(&asset.Tkt_value[0])),
+		(*C.uchar)(unsafe.Pointer(&memo[0])),
+		(*C.uchar)(unsafe.Pointer(&ar[0])),
+		(*C.uchar)(unsafe.Pointer(&einfo[0])),
+	)
+	if ret != C.int(0) {
+		e = fmt.Errorf("enc info error: %d", int(ret))
+		return
+	}
+	return
+}
+
 type EncInfoDesc struct {
 	//---in---
 	Key   c_type.Uint256

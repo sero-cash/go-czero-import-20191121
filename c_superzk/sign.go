@@ -13,10 +13,9 @@ import (
 	"github.com/sero-cash/go-czero-import/c_type"
 )
 
-func GenZPKa(pkr *c_type.PKr) (zpka c_type.Uint256, a c_type.Uint256, e error) {
+func GenZPKa(pkr *c_type.PKr, a *c_type.Uint256) (zpka c_type.Uint256, e error) {
 	assertPKr(pkr)
 	pkr = ClearPKr(pkr)
-	a = RandomFr()
 	ret := C.superzk_gen_zpka(
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),
 		(*C.uchar)(unsafe.Pointer(&a[0])),
