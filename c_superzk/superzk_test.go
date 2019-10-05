@@ -62,11 +62,11 @@ func TestAccount(t *testing.T) {
 	}
 
 	h := c_type.RandUint256()
-	sign, e := SignPKr(&sk, &h, &pkr)
+	sign, e := SignPKr_P(&sk, &h, &pkr)
 	if e != nil {
 		t.Fatal(e)
 	}
-	if !VerifyPKr(&h, &sign, &pkr) {
+	if !VerifyPKr_P(&h, &sign, &pkr) {
 		t.Fatal("verify pkr error")
 	}
 

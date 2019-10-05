@@ -32,3 +32,9 @@ func Sk2Tk(sk *c_type.Uint512) (tk c_type.Tk, e error) {
 	}
 	return
 }
+
+func Seed2Tk(seed *c_type.Uint256) (tk c_type.Tk, e error) {
+	sk := Seed2Sk(seed)
+	tk, e = Sk2Tk(&sk)
+	return
+}

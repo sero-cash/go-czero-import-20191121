@@ -57,7 +57,7 @@ func VerifyZPKa(data *c_type.Uint256, sign *c_type.Uint512, zpka *c_type.Uint256
 	return true
 }
 
-func SignPKr(sk *c_type.Uint512, data *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
+func SignPKr_P(sk *c_type.Uint512, data *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
 	assertPKr(pkr)
 	pkr = ClearPKr(pkr)
 	ret := C.superzk_sign_pkr(
@@ -73,7 +73,7 @@ func SignPKr(sk *c_type.Uint512, data *c_type.Uint256, pkr *c_type.PKr) (sign c_
 	return
 }
 
-func VerifyPKr(data *c_type.Uint256, sign *c_type.Uint512, pkr *c_type.PKr) bool {
+func VerifyPKr_P(data *c_type.Uint256, sign *c_type.Uint512, pkr *c_type.PKr) bool {
 	assertPKr(pkr)
 	pkr = ClearPKr(pkr)
 	ret := C.superzk_verify_pkr(
@@ -142,4 +142,24 @@ func VerifyPKr_P0(h *c_type.Uint256, sign *c_type.Uint512, pkr *c_type.PKr) (e e
 		return
 	}
 	return
+}
+
+func SignPKr_X(sk *c_type.Uint512, data *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
+	if IsSzkPKr(pkr) {
+		return SignPKr_P(sk, data, pkr)
+	} else {
+		return SignPKr_P0(data, sk, pkr)
+	}
+}
+
+func VerifyPKr_X(data *c_type.Uint256, sign *c_type.Uint512, pkr *c_type.PKr) bool {
+	if IsSzkPKr(pkr) {
+		return VerifyPKr_P(data, sign, pkr)
+	} else {
+		if e := VerifyPKr_P0(data, sign, pkr); e != nil {
+			return false
+		} else {
+			return true
+		}
+	}
 }
