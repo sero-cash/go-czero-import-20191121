@@ -38,3 +38,11 @@ func Combine(l *c_type.Uint256, r *c_type.Uint256) (out c_type.Uint256) {
 	)
 	return
 }
+
+func HashPKr(pkr *c_type.PKr) (ret [20]byte) {
+	C.superzk_hpkr(
+		(*C.uchar)(unsafe.Pointer(&pkr[0])),
+		(*C.uchar)(unsafe.Pointer(&ret[0])),
+	)
+	return
+}

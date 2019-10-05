@@ -27,7 +27,6 @@ import (
 	"unsafe"
 
 	"github.com/sero-cash/go-czero-import/c_type"
-
 	"github.com/sero-cash/go-czero-import/seroparam"
 )
 
@@ -63,17 +62,6 @@ func ZeroInit_OnlyInOuts() error {
 	return nil
 }
 
-type Pre struct {
-	I uint32
-	R c_type.Uint256
-	Z [2]c_type.Uint256 //I256
-}
-type Extra struct {
-	Pre
-	O      [2]c_type.Uint256 //I256
-	S1_ret c_type.Uint256
-}
-
 type Out struct {
 	Addr           c_type.Uint512
 	Value          c_type.Uint256 //U256
@@ -100,37 +88,6 @@ type Common struct {
 	Hash_O   c_type.Uint256
 	Currency c_type.Uint256
 	C        [2]c_type.Uint256
-}
-
-func GenOutCM(
-	asset c_type.Asset,
-	memo *c_type.Uint512,
-	pkr *c_type.PKr,
-	rsk *c_type.Uint256,
-) (cm c_type.Uint256) {
-	C.zero_out_commitment(
-		(*C.uchar)(unsafe.Pointer(&asset.Tkn_currency[0])),
-		(*C.uchar)(unsafe.Pointer(&asset.Tkn_value[0])),
-		(*C.uchar)(unsafe.Pointer(&asset.Tkt_category[0])),
-		(*C.uchar)(unsafe.Pointer(&asset.Tkt_value[0])),
-		(*C.uchar)(unsafe.Pointer(&memo[0])),
-		(*C.uchar)(unsafe.Pointer(&pkr[0])),
-		(*C.uchar)(unsafe.Pointer(&rsk[0])),
-		(*C.uchar)(unsafe.Pointer(&cm[0])),
-	)
-	return
-}
-
-func GenRootCM(
-	index uint64,
-	out_cm *c_type.Uint256,
-) (cm c_type.Uint256) {
-	C.zero_root_commitment(
-		C.ulong(index),
-		(*C.uchar)(unsafe.Pointer(&out_cm[0])),
-		(*C.uchar)(unsafe.Pointer(&cm[0])),
-	)
-	return
 }
 
 type ConfirmOutputDesc struct {
@@ -243,29 +200,11 @@ func DecOutput(desc *InfoDesc) {
 	)
 }
 
-func GenTil(tk *c_type.Tk, root_cm *c_type.Uint256) (til c_type.Uint256) {
-	C.zero_til(
-		(*C.uchar)(unsafe.Pointer(&tk[0])),
-		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
-		(*C.uchar)(unsafe.Pointer(&til[0])),
-	)
-	return
-}
-
 func FetchRootCM(tk *c_type.Tk, til *c_type.Uint256) (root_cm c_type.Uint256) {
 	C.zero_til2cm(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
 		(*C.uchar)(unsafe.Pointer(&til[0])),
 		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
-	)
-	return
-}
-
-func GenNil(sk *c_type.Uint512, root_cm *c_type.Uint256) (nil c_type.Uint256) {
-	C.zero_nil(
-		(*C.uchar)(unsafe.Pointer(&sk[0])),
-		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
-		(*C.uchar)(unsafe.Pointer(&nil[0])),
 	)
 	return
 }

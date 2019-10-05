@@ -2,9 +2,12 @@ package superzk
 
 import "C"
 import (
+	"errors"
+
 	"github.com/sero-cash/go-czero-import/c_czero"
 	"github.com/sero-cash/go-czero-import/c_superzk"
 	"github.com/sero-cash/go-czero-import/c_type"
+	"github.com/sero-cash/go-czero-import/seroparam"
 )
 
 func Seed2Tk(seed *c_type.Uint256) (tk c_type.Tk) {
@@ -48,10 +51,6 @@ func IsPKrValid(pkr *c_type.PKr) bool {
 	}
 }
 
-func HashPKr(pkr *c_type.PKr) (ret [20]byte) {
-	return c_czero.HashPKr(pkr)
-}
-
 func IsMyPKr(tk *c_type.Tk, pkr *c_type.PKr) (succ bool) {
 	if c_superzk.IsSzkPKr(pkr) {
 		return c_superzk.IsMyPKr(tk, pkr)
@@ -68,7 +67,7 @@ func SignPKr(sk *c_type.Uint512, data *c_type.Uint256, pkr *c_type.PKr) (sign c_
 	if c_superzk.IsSzkPKr(pkr) {
 		return c_superzk.SignPKr(sk, data, pkr)
 	} else {
-		return c_superzk.Czero_signPKr(data, sk, pkr)
+		return c_superzk.SignPKr_P0(data, sk, pkr)
 	}
 }
 
@@ -76,10 +75,47 @@ func VerifyPKr(data *c_type.Uint256, sign *c_type.Uint512, pkr *c_type.PKr) bool
 	if c_superzk.IsSzkPKr(pkr) {
 		return c_superzk.VerifyPKr(data, sign, pkr)
 	} else {
-		if e := c_superzk.Czero_verifyPKr(data, sign, pkr); e != nil {
+		if e := c_superzk.VerifyPKr_P0(data, sign, pkr); e != nil {
 			return false
 		} else {
 			return true
+		}
+	}
+}
+
+func SignPKr_ByHeight(num uint64, sk *c_type.Uint512, data *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
+	if num >= seroparam.SIP5() {
+		if c_superzk.IsSzkPKr(pkr) {
+			return c_superzk.SignPKr(sk, data, pkr)
+		} else {
+			return c_superzk.SignPKr_P0(data, sk, pkr)
+		}
+	} else {
+		if c_superzk.IsSzkPKr(pkr) {
+			e = errors.New("sign pkr error: szk pkr not support < sip5")
+			return
+		} else {
+			return c_czero.SignPKrBySk(sk, data, pkr)
+		}
+	}
+}
+
+func VerifyPKr_ByHeight(num uint64, data *c_type.Uint256, sign *c_type.Uint512, pkr *c_type.PKr) bool {
+	if num >= seroparam.SIP5() {
+		if c_superzk.IsSzkPKr(pkr) {
+			return c_superzk.VerifyPKr(data, sign, pkr)
+		} else {
+			if c_superzk.VerifyPKr_P0(data, sign, pkr) == nil {
+				return true
+			} else {
+				return false
+			}
+		}
+	} else {
+		if c_superzk.IsSzkPKr(pkr) {
+			return false
+		} else {
+			return c_czero.VerifyPKr(data, sign, pkr)
 		}
 	}
 }

@@ -122,33 +122,6 @@ func Czero_decEInfo(key *c_type.Uint256, flag bool, einfo *c_type.Einfo) (asset 
 	return
 }
 
-func Czero_signPKr(h *c_type.Uint256, sk *c_type.Uint512, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
-	ret := C.czero_sign_pkr(
-		(*C.uchar)(unsafe.Pointer(&h[0])),
-		(*C.uchar)(unsafe.Pointer(&sk[0])),
-		(*C.uchar)(unsafe.Pointer(&pkr[0])),
-		(*C.uchar)(unsafe.Pointer(&sign[0])),
-	)
-	if ret != C.int(0) {
-		e = fmt.Errorf("czero sign pkr error: %d", int(ret))
-		return
-	}
-	return
-}
-
-func Czero_verifyPKr(h *c_type.Uint256, sign *c_type.Uint512, pkr *c_type.PKr) (e error) {
-	ret := C.czero_verify_pkr(
-		(*C.uchar)(unsafe.Pointer(&h[0])),
-		(*C.uchar)(unsafe.Pointer(&sign[0])),
-		(*C.uchar)(unsafe.Pointer(&pkr[0])),
-	)
-	if ret != C.int(0) {
-		e = fmt.Errorf("czero verify pkr error: %d", int(ret))
-		return
-	}
-	return
-}
-
 func Czero_genNil(sk *c_type.Uint512, root_cm *c_type.Uint256) (nl c_type.Uint256, e error) {
 	ret := C.czero_gen_nil(
 		(*C.uchar)(unsafe.Pointer(&sk[0])),
@@ -175,36 +148,6 @@ func Czero_genTrace(tk *c_type.Tk, root_cm *c_type.Uint256) (trace c_type.Uint25
 	return
 }
 
-func Czero_signNil(h *c_type.Uint256, sk *c_type.Uint512, pkr *c_type.PKr, root_cm *c_type.Uint256) (sign c_type.SignN, e error) {
-	ret := C.czero_sign_nil(
-		(*C.uchar)(unsafe.Pointer(&h[0])),
-		(*C.uchar)(unsafe.Pointer(&sk[0])),
-		(*C.uchar)(unsafe.Pointer(&pkr[0])),
-		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
-		(*C.uchar)(unsafe.Pointer(&sign[0])),
-	)
-	if ret != C.int(0) {
-		e = fmt.Errorf("czero sign nil error: %d", int(ret))
-		return
-	}
-	return
-}
-
-func Czero_verifyNil(h *c_type.Uint256, sign *c_type.SignN, pkr *c_type.PKr, root_cm *c_type.Uint256, nl *c_type.Uint256) (e error) {
-	ret := C.czero_verify_nil(
-		(*C.uchar)(unsafe.Pointer(&h[0])),
-		(*C.uchar)(unsafe.Pointer(&sign[0])),
-		(*C.uchar)(unsafe.Pointer(&pkr[0])),
-		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
-		(*C.uchar)(unsafe.Pointer(&nl[0])),
-	)
-	if ret != C.int(0) {
-		e = fmt.Errorf("czero verify nil error: %d", int(ret))
-		return
-	}
-	return
-}
-
 func Czero_genOutCM(asset *c_type.Asset, memo *c_type.Uint512, pkr *c_type.PKr, rsk *c_type.Uint256) (out_cm c_type.Uint256, e error) {
 	ret := C.czero_gen_out_cm(
 		(*C.uchar)(unsafe.Pointer(&asset.Tkn_currency[0])),
@@ -220,5 +163,23 @@ func Czero_genOutCM(asset *c_type.Asset, memo *c_type.Uint512, pkr *c_type.PKr, 
 		e = fmt.Errorf("czero gen out cm error: %d", int(ret))
 		return
 	}
+	return
+}
+
+func Czero_genRootCM(index uint64, out_cm *c_type.Uint256) (cm c_type.Uint256) {
+	C.czero_gen_root_cm(
+		C.ulong(index),
+		(*C.uchar)(unsafe.Pointer(&out_cm[0])),
+		(*C.uchar)(unsafe.Pointer(&cm[0])),
+	)
+	return
+}
+
+func Czero_combine(l *c_type.Uint256, r *c_type.Uint256) (out c_type.Uint256) {
+	C.czero_merkle_combine(
+		(*C.uchar)(unsafe.Pointer(&l[0])),
+		(*C.uchar)(unsafe.Pointer(&r[0])),
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+	)
 	return
 }

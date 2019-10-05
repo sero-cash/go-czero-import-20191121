@@ -70,7 +70,8 @@ func TestAccount(t *testing.T) {
 		t.Fatal("verify pkr error")
 	}
 
-	zpka, a, e := GenZPKa(&pkr)
+	a := RandomFr()
+	zpka, e := GenZPKa(&pkr, &a)
 	if e != nil {
 		t.Fatal(e)
 	}

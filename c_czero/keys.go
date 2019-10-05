@@ -29,80 +29,6 @@ import (
 	"github.com/sero-cash/go-czero-import/c_type"
 )
 
-func HashPKr(pkr *c_type.PKr) (ret [20]byte) {
-	C.zero_hpkr(
-		(*C.uchar)(unsafe.Pointer(&pkr[0])),
-		(*C.uchar)(unsafe.Pointer(&ret[0])),
-	)
-	return
-}
-
-func Tk2Pk(tk *c_type.Tk) (pk c_type.Uint512) {
-	C.zero_tk2pk(
-		(*C.uchar)(unsafe.Pointer(&tk[0])),
-		(*C.uchar)(unsafe.Pointer(&pk[0])),
-	)
-	return
-}
-
-func IsPKValid(pk *c_type.Uint512) bool {
-	ret := C.zero_pk_valid(
-		(*C.uchar)(unsafe.Pointer(&pk[0])),
-	)
-
-	if ret == C.char(0) {
-		return true
-	} else {
-		return false
-	}
-}
-
-func Pk2PKr(addr *c_type.Uint512, r *c_type.Uint256) (pkr c_type.PKr) {
-	if r == nil {
-		t := c_type.RandUint256()
-		r = &t
-	} else {
-		if (*r) == c_type.Empty_Uint256 {
-			panic("gen pkr, but r is empty")
-		}
-	}
-
-	C.zero_pk2pkr(
-		(*C.uchar)(unsafe.Pointer(&addr[0])),
-		(*C.uchar)(unsafe.Pointer(&r[0])),
-		(*C.uchar)(unsafe.Pointer(&pkr[0])),
-	)
-	return
-}
-
-func IsMyPKr(tk *c_type.Tk, pkr *c_type.PKr) (succ bool) {
-	ret := C.zero_ismy_pkr(
-		(*C.uchar)(unsafe.Pointer(&pkr[0])),
-		(*C.uchar)(unsafe.Pointer(&tk[0])),
-	)
-	if ret == C.char(0) {
-		succ = true
-		return
-	} else {
-		succ = false
-		return
-	}
-}
-
-func FetchKey(tk *c_type.Tk, rpk *c_type.Uint256) (ret c_type.Uint256, flag bool) {
-	f := C.zero_fetch_key(
-		(*C.uchar)(unsafe.Pointer(&tk[0])),
-		(*C.uchar)(unsafe.Pointer(&rpk[0])),
-		(*C.uchar)(unsafe.Pointer(&ret[0])),
-	)
-	if f == C.char(0) {
-		flag = false
-	} else {
-		flag = true
-	}
-	return
-}
-
 func SignPKrBySk(sk *c_type.Uint512, data *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
 	C.zero_sign_pkr_by_sk(
 		(*C.uchar)(unsafe.Pointer(&data[0])),
@@ -122,17 +48,6 @@ func VerifyPKr(data *c_type.Uint256, sign *c_type.Uint512, pkr *c_type.PKr) bool
 	ret := C.zero_verify_pkr(
 		(*C.uchar)(unsafe.Pointer(&data[0])),
 		(*C.uchar)(unsafe.Pointer(&sign[0])),
-		(*C.uchar)(unsafe.Pointer(&pkr[0])),
-	)
-	if ret == C.char(0) {
-		return true
-	} else {
-		return false
-	}
-}
-
-func IsPKrValid(pkr *c_type.PKr) bool {
-	ret := C.zero_pkr_valid(
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),
 	)
 	if ret == C.char(0) {

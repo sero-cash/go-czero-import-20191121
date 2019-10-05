@@ -25,6 +25,8 @@ import "C"
 import (
 	"unsafe"
 
+	"github.com/sero-cash/go-czero-import/c_superzk"
+
 	"github.com/sero-cash/go-czero-import/c_type"
 
 	"github.com/sero-cash/go-czero-import/seroparam"
@@ -64,7 +66,7 @@ func CheckLICr(pkr *c_type.PKr, licr *LICr, height uint64) bool {
 	if seroparam.Is_Dev() {
 		return true
 	}
-	if !IsPKrValid(pkr) {
+	if !c_superzk.Czero_isPKrValid(pkr) {
 		return false
 	}
 	r := C.zero_check_licr(

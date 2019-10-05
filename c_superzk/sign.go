@@ -86,3 +86,60 @@ func VerifyPKr(data *c_type.Uint256, sign *c_type.Uint512, pkr *c_type.PKr) bool
 	}
 	return true
 }
+
+func SignNil_P0(h *c_type.Uint256, sk *c_type.Uint512, pkr *c_type.PKr, root_cm *c_type.Uint256) (sign c_type.SignN, e error) {
+	ret := C.czero_sign_nil(
+		(*C.uchar)(unsafe.Pointer(&h[0])),
+		(*C.uchar)(unsafe.Pointer(&sk[0])),
+		(*C.uchar)(unsafe.Pointer(&pkr[0])),
+		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
+		(*C.uchar)(unsafe.Pointer(&sign[0])),
+	)
+	if ret != C.int(0) {
+		e = fmt.Errorf("czero sign nil error: %d", int(ret))
+		return
+	}
+	return
+}
+
+func VerifyNil_P0(h *c_type.Uint256, sign *c_type.SignN, pkr *c_type.PKr, root_cm *c_type.Uint256, nl *c_type.Uint256) (e error) {
+	ret := C.czero_verify_nil(
+		(*C.uchar)(unsafe.Pointer(&h[0])),
+		(*C.uchar)(unsafe.Pointer(&sign[0])),
+		(*C.uchar)(unsafe.Pointer(&pkr[0])),
+		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
+		(*C.uchar)(unsafe.Pointer(&nl[0])),
+	)
+	if ret != C.int(0) {
+		e = fmt.Errorf("czero verify nil error: %d", int(ret))
+		return
+	}
+	return
+}
+
+func SignPKr_P0(h *c_type.Uint256, sk *c_type.Uint512, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
+	ret := C.czero_sign_pkr(
+		(*C.uchar)(unsafe.Pointer(&h[0])),
+		(*C.uchar)(unsafe.Pointer(&sk[0])),
+		(*C.uchar)(unsafe.Pointer(&pkr[0])),
+		(*C.uchar)(unsafe.Pointer(&sign[0])),
+	)
+	if ret != C.int(0) {
+		e = fmt.Errorf("czero sign pkr error: %d", int(ret))
+		return
+	}
+	return
+}
+
+func VerifyPKr_P0(h *c_type.Uint256, sign *c_type.Uint512, pkr *c_type.PKr) (e error) {
+	ret := C.czero_verify_pkr(
+		(*C.uchar)(unsafe.Pointer(&h[0])),
+		(*C.uchar)(unsafe.Pointer(&sign[0])),
+		(*C.uchar)(unsafe.Pointer(&pkr[0])),
+	)
+	if ret != C.int(0) {
+		e = fmt.Errorf("czero verify pkr error: %d", int(ret))
+		return
+	}
+	return
+}

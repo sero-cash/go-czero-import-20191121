@@ -34,11 +34,11 @@ func TestCzeroAccount(t *testing.T) {
 	}
 
 	h := c_type.RandUint256()
-	sign, e := Czero_signPKr(&h, &sk, &pkr)
+	sign, e := SignPKr_P0(&h, &sk, &pkr)
 	if e != nil {
 		t.Fatal(e)
 	}
-	if Czero_verifyPKr(&h, &sign, &pkr) != nil {
+	if VerifyPKr_P0(&h, &sign, &pkr) != nil {
 		t.Fatal("verify pkr error")
 	}
 
@@ -47,11 +47,11 @@ func TestCzeroAccount(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	nl_sign, e := Czero_signNil(&h, &sk, &pkr, &root_cm)
+	nl_sign, e := SignNil_P0(&h, &sk, &pkr, &root_cm)
 	if e != nil {
 		t.Fatal(e)
 	}
-	if e := Czero_verifyNil(&h, &nl_sign, &pkr, &root_cm, &nl); e != nil {
+	if e := VerifyNil_P0(&h, &nl_sign, &pkr, &root_cm, &nl); e != nil {
 		t.Fatal(e)
 	}
 }

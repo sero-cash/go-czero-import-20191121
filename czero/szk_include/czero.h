@@ -96,5 +96,16 @@ extern int czero_gen_out_cm(
     unsigned char out_cm[32]
 );
 
+extern void czero_gen_root_cm(
+    unsigned long index,
+    const unsigned char out_cm[32],
+    unsigned char cm[32]
+);
+
+extern void czero_merkle_combine(
+    const unsigned char l[32],
+    const unsigned char r[32],
+    unsigned char h[32]
+);
 
 #endif //LIBSUPERZK_CZERO_H
