@@ -13,9 +13,11 @@ func ZeroInit(account_dir string, netType c_type.NetType) error {
 }
 
 func ZeroInit_NoCircuit() error {
+	c_superzk.InitParams()
 	return c_czero.ZeroInit_NoCircuit()
 }
 
 func ZeroInit_OnlyInOuts() error {
+	c_superzk.InitParams()
 	return c_czero.ZeroInit_OnlyInOuts()
 }
