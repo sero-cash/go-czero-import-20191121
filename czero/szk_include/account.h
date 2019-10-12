@@ -66,7 +66,8 @@ extern int superzk_fetch_key(
     const unsigned char pkr[SZK_PKr_WIDTH],
     const unsigned char tk[SZK_TK_WIDTH],
     const unsigned char rpk[32],
-    unsigned char key[32]
+    unsigned char key[32],
+    unsigned char vskr[32]
 );
 
 extern int superzk_gen_zpka(

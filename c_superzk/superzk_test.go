@@ -51,7 +51,7 @@ func TestAccount(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	fkey, e := FetchKey(&pkr, &tk, &rpk)
+	fkey, _, e := FetchKey(&pkr, &tk, &rpk)
 	if e != nil {
 		t.Fatal(e)
 	}

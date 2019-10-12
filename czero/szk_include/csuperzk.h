@@ -14,8 +14,11 @@ extern "C" {
 #include "commitment.h"
 #include "asset.h"
 #include "czero.h"
+#include "output.h"
+#include "input.h"
 
 extern void superzk_init_params();
+extern void superzk_init_params_no_circuit();
 extern void superzk_random_pt(unsigned char pt[32]);
 extern void superzk_random_fr(unsigned char fr[32]);
 extern void superzk_merkle_combine(

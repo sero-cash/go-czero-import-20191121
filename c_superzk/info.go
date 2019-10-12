@@ -122,7 +122,7 @@ func GenKey(pkr *c_type.PKr) (key c_type.Uint256, rpk c_type.Uint256, rsk c_type
 	return
 }
 
-func FetchKey(pkr *c_type.PKr, tk *c_type.Tk, rpk *c_type.Uint256) (key c_type.Uint256, e error) {
+func FetchKey(pkr *c_type.PKr, tk *c_type.Tk, rpk *c_type.Uint256) (key c_type.Uint256, vskr c_type.Uint256, e error) {
 	assertPKr(pkr)
 	pkr = ClearPKr(pkr)
 	ret := C.superzk_fetch_key(
@@ -130,6 +130,7 @@ func FetchKey(pkr *c_type.PKr, tk *c_type.Tk, rpk *c_type.Uint256) (key c_type.U
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
 		(*C.uchar)(unsafe.Pointer(&rpk[0])),
 		(*C.uchar)(unsafe.Pointer(&key[0])),
+		(*C.uchar)(unsafe.Pointer(&vskr[0])),
 	)
 	if ret != C.int(0) {
 		e = fmt.Errorf("fetch key error: %d", int(ret))

@@ -444,3 +444,12 @@ func VerifyInputS(desc *VerifyInputSDesc) (e error) {
 		return
 	}
 }
+
+func Combine(l *c_type.Uint256, r *c_type.Uint256) (out c_type.Uint256) {
+	C.zero_merkle_combine(
+		(*C.uchar)(unsafe.Pointer(&l[0])),
+		(*C.uchar)(unsafe.Pointer(&r[0])),
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+	)
+	return
+}

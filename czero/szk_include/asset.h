@@ -32,7 +32,8 @@ extern int superzk_gen_asset_cm(
     const unsigned char tkt_category[32],
     const unsigned char tkt_value[32],
     const unsigned char ar[32],
-    unsigned char cm[32]
+    unsigned char cm[32],
+    unsigned char cc[32]
 );
 
 extern int superzk_sign_balance(
