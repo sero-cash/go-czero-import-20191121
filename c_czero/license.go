@@ -25,23 +25,14 @@ import "C"
 import (
 	"unsafe"
 
+	"github.com/sero-cash/go-czero-import/seroparam"
+
 	"github.com/sero-cash/go-czero-import/c_superzk"
 
 	"github.com/sero-cash/go-czero-import/c_type"
-
-	"github.com/sero-cash/go-czero-import/seroparam"
 )
 
-const PROOF_WIDTH = 131
-
-type LICr struct {
-	Proof [PROOF_WIDTH]byte
-	C     uint64
-	L     uint64
-	H     uint64
-}
-
-func Pk2PKrAndLICr(addr *c_type.Uint512, height uint64) (pkr c_type.PKr, licr LICr, ret bool) {
+func Pk2PKrAndLICr(addr *c_type.Uint512, height uint64) (pkr c_type.PKr, licr c_type.LICr, ret bool) {
 	r := C.zero_pk2pkr_and_licr(
 		//---in---
 		(*C.uchar)(unsafe.Pointer(&addr[0])),
@@ -53,7 +44,6 @@ func Pk2PKrAndLICr(addr *c_type.Uint512, height uint64) (pkr c_type.PKr, licr LI
 		(*C.ulong)(unsafe.Pointer(&licr.H)),
 		(*C.uchar)(unsafe.Pointer(&licr.Proof[0])),
 	)
-	licr.C = 1000000000000
 	if r == C.char(0) {
 		ret = true
 	} else {
@@ -62,10 +52,12 @@ func Pk2PKrAndLICr(addr *c_type.Uint512, height uint64) (pkr c_type.PKr, licr LI
 	return
 }
 
-func CheckLICr(pkr *c_type.PKr, licr *LICr, height uint64) bool {
+func CheckLICr(pkr *c_type.PKr, licr *c_type.LICr, height uint64) bool {
+
 	if seroparam.Is_Dev() {
 		return true
 	}
+
 	if !c_superzk.Czero_isPKrValid(pkr) {
 		return false
 	}
@@ -82,8 +74,4 @@ func CheckLICr(pkr *c_type.PKr, licr *LICr, height uint64) bool {
 	} else {
 		return false
 	}
-}
-
-func (self *LICr) GetProp() (counteract uint64, limit uint64) {
-	return 0, 0
 }
