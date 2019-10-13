@@ -6,13 +6,8 @@ package c_czero
 
 */
 import "C"
-import (
-	"errors"
-	"unsafe"
 
-	"github.com/sero-cash/go-czero-import/c_type"
-)
-
+/*
 func ConfirmPkg(desc *ConfirmPkgDesc) (e error) {
 	ret := C.zero_pkg_confirm(
 		(*C.uchar)(unsafe.Pointer(&desc.Tkn_currency[0])),
@@ -89,4 +84,4 @@ func VerifyPkg(desc *PkgVerifyDesc) (e error) {
 		e = errors.New("verify pkg error")
 		return
 	}
-}
+}*/
