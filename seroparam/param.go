@@ -56,14 +56,6 @@ func SIP5() uint64 {
 	}
 }
 
-func SIP6() uint64 {
-	if is_dev {
-		return 100
-	} else {
-		return uint64(2200000)
-	}
-}
-
 const MAX_O_INS_LENGTH = int(2500)
 
 const MAX_O_OUT_LENGTH = int(10)
