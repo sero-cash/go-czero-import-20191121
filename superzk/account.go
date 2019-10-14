@@ -36,10 +36,19 @@ func IsPKrValid(pkr *c_type.PKr) bool {
 	}
 }
 
-func IsMyPKr(tk *c_type.Tk, pkr *c_type.PKr) (succ bool) {
+func IsMyPKr(tk *c_type.Tk, pkr *c_type.PKr, version int) (succ bool) {
+	if version > 2 {
+		return false
+	}
 	if c_superzk.IsSzkPKr(pkr) {
+		if version == 1 {
+			return false
+		}
 		return c_superzk.IsMyPKr(tk, pkr)
 	} else {
+		if version == 2 {
+			return false
+		}
 		if e := c_superzk.Czero_isMyPKr(tk, pkr); e != nil {
 			return false
 		} else {
