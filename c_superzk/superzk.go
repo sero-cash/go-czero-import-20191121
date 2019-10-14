@@ -16,6 +16,10 @@ func InitParams() {
 	C.superzk_init_params()
 }
 
+func InitParams_NoCircuit() {
+	C.superzk_init_params_no_circuit()
+}
+
 func RandomPt() (ret c_type.Uint256) {
 	C.superzk_random_pt(
 		(*C.uchar)(unsafe.Pointer(&ret[0])),
