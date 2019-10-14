@@ -65,7 +65,16 @@ func IsPKValid(pk *c_type.Uint512) bool {
 	if c_superzk.IsSzkPK(pk) {
 		fmt.Println("USE Invalid PK: ", hex.EncodeToString(pk[:]))
 	}
-	ret := C.zero_pk_valid(
+
+	//TODO
+	ret := C.superzk_pk_valid(
+		(*C.uchar)(unsafe.Pointer(&pk[0])),
+	)
+	if ret != C.int(0) {
+		fmt.Println("USE Invalid PK: ", hex.EncodeToString(pk[:]))
+	}
+
+	ret = C.zero_pk_valid(
 		(*C.uchar)(unsafe.Pointer(&pk[0])),
 	)
 	if ret != C.char(0) {
@@ -78,7 +87,16 @@ func IsPKrValid(pkr *c_type.PKr) bool {
 	if c_superzk.IsSzkPKr(pkr) {
 		fmt.Println("USE Invalid PKr: ", hex.EncodeToString(pkr[:]))
 	}
-	ret := C.zero_pkr_valid(
+
+	//TODO
+	ret := C.superzk_pkr_valid(
+		(*C.uchar)(unsafe.Pointer(&pkr[0])),
+	)
+	if ret != C.int(0) {
+		fmt.Println("USE Invalid PKr: ", hex.EncodeToString(pkr[:]))
+	}
+
+	ret = C.zero_pkr_valid(
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),
 	)
 	if ret != C.char(0) {
