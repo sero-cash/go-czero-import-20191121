@@ -7,6 +7,21 @@ import (
 
 type PKr [96]byte
 
+func (self *PKr) ZPKr() (ret Uint256) {
+	copy(ret[:], self[:32])
+	return
+}
+
+func (self *PKr) VPKr() (ret Uint256) {
+	copy(ret[:], self[32:64])
+	return
+}
+
+func (self *PKr) BASEr() (ret Uint256) {
+	copy(ret[:], self[64:])
+	return
+}
+
 func (self *PKr) IsEndEmpty() bool {
 	end := Uint256{}
 	copy(end[:], self[64:])
