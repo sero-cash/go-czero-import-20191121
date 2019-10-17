@@ -14,15 +14,16 @@ import (
 )
 
 func Tk2Pk(tk *c_type.Tk) (pk c_type.Uint512, e error) {
+	tk = ClearTk(tk)
 	ret := C.superzk_tk2pk(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
 		(*C.uchar)(unsafe.Pointer(&pk[0])),
 	)
+	SetFlag(pk[:])
 	if ret != C.int(0) {
 		e = errors.New("tk2pk error")
 		return
 	}
-	SetFlag(pk[:])
 	return
 }
 
@@ -80,6 +81,7 @@ func IsPKrValid(pkr *c_type.PKr) bool {
 
 func IsMyPKr(tk *c_type.Tk, pkr *c_type.PKr) bool {
 	assertPKr(pkr)
+	tk = ClearTk(tk)
 	pkr = ClearPKr(pkr)
 	ret := C.superzk_my_pkr(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),

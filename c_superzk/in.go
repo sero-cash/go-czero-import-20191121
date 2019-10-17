@@ -14,7 +14,9 @@ import (
 )
 
 func GenNil(tk *c_type.Tk, root_cm *c_type.Uint256, pkr *c_type.PKr) (nil c_type.Uint256, e error) {
+	assertTk(tk)
 	assertPKr(pkr)
+	tk = ClearTk(tk)
 	pkr = ClearPKr(pkr)
 	ret := C.superzk_gen_nil(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
@@ -31,7 +33,9 @@ func GenNil(tk *c_type.Tk, root_cm *c_type.Uint256, pkr *c_type.PKr) (nil c_type
 }
 
 func SignNil(tk *c_type.Tk, hash *c_type.Uint256, root_cm *c_type.Uint256, pkr *c_type.PKr) (sign c_type.SignN, e error) {
+	assertTk(tk)
 	assertPKr(pkr)
+	tk = ClearTk(tk)
 	pkr = ClearPKr(pkr)
 	ret := C.superzk_sign_nil(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),

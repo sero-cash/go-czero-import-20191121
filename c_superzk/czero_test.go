@@ -8,12 +8,12 @@ import (
 
 func TestCzeroAccount(t *testing.T) {
 	seed := c_type.RandUint256()
-	sk := Seed2Sk(&seed)
-	tk, e := Sk2Tk(&sk)
+	sk := Czero_Seed2Sk(&seed)
+	tk, e := Czero_sk2Tk(&sk)
 	if e != nil {
 		t.Fatal(e)
 	}
-	pk, e := Czero_Tk2PK(&tk)
+	pk, e := Czero_Tk2Pk(&tk)
 	if e != nil {
 		t.Fatal(e)
 	}

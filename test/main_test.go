@@ -19,7 +19,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/sero-cash/go-sero/accounts"
 	"testing"
 
 	"github.com/sero-cash/go-czero-import/c_czero"
@@ -32,13 +31,13 @@ import (
 
 func TestSk(t *testing.T) {
 	seed := c_type.RandUint256()
-	sk:= c_superzk.Seed2Sk(&seed)
+	sk := superzk.Seed2Sk(&seed, 1)
 	fmt.Println(sk)
 }
 
 func TestKeys(t *testing.T) {
 	seed := c_type.RandUint256()
-	sk := c_superzk.Seed2Sk(&seed)
+	sk := superzk.Seed2Sk(&seed, 1)
 	tk, _ := c_superzk.Seed2Tk(&seed)
 	pk, _ := c_superzk.Czero_Tk2PK(&tk)
 

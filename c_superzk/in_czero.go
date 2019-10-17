@@ -13,7 +13,27 @@ import (
 	"github.com/sero-cash/go-czero-import/c_type"
 )
 
-func Czero_Tk2PK(tk *c_type.Tk) (pk c_type.Uint512, e error) {
+func Czero_Seed2Sk(seed *c_type.Uint256) (sk c_type.Uint512) {
+	C.superzk_seed2sk(
+		(*C.uchar)(unsafe.Pointer(&seed[0])),
+		(*C.uchar)(unsafe.Pointer(&sk[0])),
+	)
+	return
+}
+
+func Czero_sk2Tk(sk *c_type.Uint512) (tk c_type.Tk, e error) {
+	ret := C.superzk_sk2tk(
+		(*C.uchar)(unsafe.Pointer(&sk[0])),
+		(*C.uchar)(unsafe.Pointer(&tk[0])),
+	)
+	if ret != C.int(0) {
+		e = fmt.Errorf("sk2tk error: %d", int(ret))
+		return
+	}
+	return
+}
+
+func Czero_Tk2Pk(tk *c_type.Tk) (pk c_type.Uint512, e error) {
 	ret := C.czero_tk2pk(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
 		(*C.uchar)(unsafe.Pointer(&pk[0])),
@@ -42,6 +62,14 @@ func Czero_PK2PKr(pk *c_type.Uint512, r *c_type.Uint256) (pkr c_type.PKr, e erro
 }
 
 func Czero_isMyPKr(tk *c_type.Tk, pkr *c_type.PKr) (e error) {
+	if IsSzkPKr(pkr) {
+		e = fmt.Errorf("czero ismypkr error")
+		return
+	}
+	if IsSzkTk(tk) {
+		e = fmt.Errorf("czero ismypkr error")
+		return
+	}
 	ret := C.czero_ismy_pkr(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),
@@ -80,6 +108,10 @@ func Czero_isPKrValid(pkr *c_type.PKr) bool {
 }
 
 func Czero_fetchKey(tk *c_type.Tk, rpk *c_type.Uint256) (key c_type.Uint256, flag bool, e error) {
+	if IsSzkTk(tk) {
+		e = fmt.Errorf("czero fetch key but the tk is szk")
+		return
+	}
 	ret := C.czero_fetch_key(
 		(*C.uchar)(unsafe.Pointer(&tk[0])),
 		(*C.uchar)(unsafe.Pointer(&rpk[0])),

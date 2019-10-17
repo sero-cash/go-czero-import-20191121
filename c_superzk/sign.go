@@ -29,7 +29,9 @@ func GenZPKa(pkr *c_type.PKr, a *c_type.Uint256) (zpka c_type.Uint256, e error) 
 }
 
 func SignZPKa(sk *c_type.Uint512, data *c_type.Uint256, a *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
+	assertSk(sk)
 	assertPKr(pkr)
+	sk = ClearSk(sk)
 	pkr = ClearPKr(pkr)
 	ret := C.superzk_sign_zpka(
 		(*C.uchar)(unsafe.Pointer(&sk[0])),
@@ -58,7 +60,9 @@ func VerifyZPKa(data *c_type.Uint256, sign *c_type.Uint512, zpka *c_type.Uint256
 }
 
 func SignPKr_P(sk *c_type.Uint512, data *c_type.Uint256, pkr *c_type.PKr) (sign c_type.Uint512, e error) {
+	assertSk(sk)
 	assertPKr(pkr)
+	sk = ClearSk(sk)
 	pkr = ClearPKr(pkr)
 	ret := C.superzk_sign_pkr(
 		(*C.uchar)(unsafe.Pointer(&sk[0])),
