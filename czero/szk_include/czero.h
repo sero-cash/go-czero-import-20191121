@@ -108,4 +108,11 @@ extern void czero_merkle_combine(
     unsigned char h[32]
 );
 
+extern int czero_til2cm(
+    const unsigned char tk[SZK_TK_WIDTH],
+    const unsigned char til[32],
+    unsigned char root_cm[32]
+);
+
+
 #endif //LIBSUPERZK_CZERO_H

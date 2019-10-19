@@ -99,3 +99,15 @@ func VerifyPKr_ByHeight(num uint64, data *c_type.Uint256, sign *c_type.Uint512, 
 		}
 	}
 }
+
+func FetchRootCM(tk *c_type.Tk, nl *c_type.Uint256, baser *c_type.Uint256) (root_cm c_type.Uint256, e error) {
+	if c_superzk.IsSzkTk(tk) && c_superzk.IsSzkNil(nl) {
+		return c_superzk.Czero_fetchRootCM(tk, baser)
+	} else {
+		if !c_superzk.IsSzkTk(tk) && !c_superzk.IsSzkNil(nl) {
+			return c_superzk.FetchRootCM(tk, nl, baser)
+		}
+	}
+	e = errors.New("superzk fetch rootcm error: tk nl not match")
+	return
+}

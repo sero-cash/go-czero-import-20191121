@@ -8,6 +8,7 @@ package c_superzk
 import "C"
 import (
 	"errors"
+	"fmt"
 	"unsafe"
 
 	"github.com/sero-cash/go-czero-import/c_type"
@@ -91,4 +92,29 @@ func IsMyPKr(tk *c_type.Tk, pkr *c_type.PKr) bool {
 		return false
 	}
 	return true
+}
+
+func FetchRootCM(tk *c_type.Tk, nl *c_type.Uint256, baser *c_type.Uint256) (root_cm c_type.Uint256, e error) {
+	if !IsSzkTk(tk) {
+		e = errors.New("csuperzk fetch rootcm error: tk is not szk")
+		return
+	}
+	if !IsSzkNil(nl) {
+		e = errors.New("csuperzk fetch rootcm error: nil is not szk")
+		return
+	}
+	tk = ClearTk(tk)
+	nl = ClearNil(nl)
+	baser = ClearNil(baser)
+	ret := C.superzk_nil2cm(
+		(*C.uchar)(unsafe.Pointer(&tk[0])),
+		(*C.uchar)(unsafe.Pointer(&nl[0])),
+		(*C.uchar)(unsafe.Pointer(&baser[0])),
+		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
+	)
+	if ret != C.int(0) {
+		e = fmt.Errorf("csuperzk fetch rootcm error: %d", int(ret))
+		return
+	}
+	return
 }

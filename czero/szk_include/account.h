@@ -113,5 +113,12 @@ extern int superzk_verify_nil(
     const unsigned char pkr[SZK_PKr_WIDTH]
 );
 
+extern int superzk_nil2cm(
+    const unsigned char tk[SZK_TK_WIDTH],
+    const unsigned char nil[32],
+    const unsigned char baser[32],
+    unsigned char root_cm[32]
+);
+
 
 #endif //LIBSUPERZK_ACCOUNT_H

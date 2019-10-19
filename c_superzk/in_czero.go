@@ -7,6 +7,7 @@ package c_superzk
 */
 import "C"
 import (
+	"errors"
 	"fmt"
 	"unsafe"
 
@@ -213,5 +214,26 @@ func Czero_combine(l *c_type.Uint256, r *c_type.Uint256) (out c_type.Uint256) {
 		(*C.uchar)(unsafe.Pointer(&r[0])),
 		(*C.uchar)(unsafe.Pointer(&out[0])),
 	)
+	return
+}
+
+func Czero_fetchRootCM(tk *c_type.Tk, til *c_type.Uint256) (root_cm c_type.Uint256, e error) {
+	if IsSzkTk(tk) {
+		e = errors.New("czero fetch rootcm error: tk is szk")
+		return
+	}
+	if IsSzkNil(til) {
+		e = errors.New("czero fetch rootcm error: til is szk")
+		return
+	}
+	ret := C.czero_til2cm(
+		(*C.uchar)(unsafe.Pointer(&tk[0])),
+		(*C.uchar)(unsafe.Pointer(&til[0])),
+		(*C.uchar)(unsafe.Pointer(&root_cm[0])),
+	)
+	if ret != C.int(0) {
+		e = fmt.Errorf("czero fetch rootcm error: %d", int(ret))
+		return
+	}
 	return
 }
