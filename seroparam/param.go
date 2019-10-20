@@ -52,7 +52,7 @@ func SIP5() uint64 {
 	if is_dev {
 		return 0
 	} else {
-		return uint64(2200000)
+		return uint64(1950548)
 	}
 }
 
