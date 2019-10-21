@@ -50,3 +50,19 @@ func Addr2PKr(pk *Uint512, rnd *Uint256) (ret PKr) {
 	ret = PKr(pr)
 	return
 }
+
+func IsPKValid(pk *Uint512) bool {
+	if pk == nil {
+		return false
+	}
+	p := c_type.Uint512(*pk)
+	return superzk.IsPKValid(&p)
+}
+
+func PKrValid(pkr *PKr) bool {
+	if pkr == nil {
+		return false
+	}
+	p := c_type.PKr(*pkr)
+	return superzk.IsPKrValid(&p)
+}
