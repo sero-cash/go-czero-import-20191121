@@ -42,9 +42,17 @@ func VP0() uint64 {
 
 func SIP4() uint64 {
 	if is_dev {
-		return 100
+		return 50
 	} else {
 		return uint64(1300000)
+	}
+}
+
+func SIP5() uint64 {
+	if is_dev {
+		return 0
+	} else {
+		return uint64(1958696)
 	}
 }
 

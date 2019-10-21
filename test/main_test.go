@@ -17,103 +17,72 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"testing"
 
-	"github.com/sero-cash/go-czero-import/cpt"
-	"github.com/sero-cash/go-czero-import/keys"
+	"github.com/sero-cash/go-czero-import/c_czero"
+
+	"github.com/sero-cash/go-czero-import/c_superzk"
+
+	"github.com/sero-cash/go-czero-import/c_type"
+	"github.com/sero-cash/go-czero-import/superzk"
 )
 
-func TestCpt(t *testing.T) {
-	rad := cpt.Random()
-	base58 := cpt.Base58Encode(rad[:])
-	if base58 == nil {
-		t.FailNow()
-	}
-	rad_ret := keys.Uint256{}
-	e := cpt.Base58Decode(base58, rad_ret[:])
-	if e != nil {
-		t.FailNow()
-	}
-	if rad_ret != rad {
-		t.FailNow()
-	}
-}
-
 func TestSk(t *testing.T) {
-	seed := cpt.Random()
-	sk := keys.Seed2Sk(&seed)
+	seed := c_type.RandUint256()
+	sk := superzk.Seed2Sk(&seed, 1)
 	fmt.Println(sk)
 }
 
-func TestPKr(t *testing.T) {
-	seed := cpt.Random()
-	pk := keys.Seed2Addr(&seed)
-	pkr := keys.Addr2PKr(&pk, nil)
-	pk_58 := cpt.Base58Encode(pk[:])
-	pkr_58 := cpt.Base58Encode(pkr[:])
-
-	p768 := keys.PKr{}
-	p512 := keys.Uint512{}
-
-	cpt.Base58Decode(pk_58, p768[:])
-	cpt.Base58Decode(pkr_58, p512[:])
-
-	p512_str := cpt.Base58Encode(p768[:])
-	p256_str := cpt.Base58Encode(p512[:])
-
-	fmt.Println(p512_str)
-	fmt.Println(p256_str)
-}
-
 func TestKeys(t *testing.T) {
-	seed := cpt.Random()
-	tk := keys.Seed2Tk(&seed)
-	pk := keys.Seed2Addr(&seed)
+	seed := c_type.RandUint256()
+	sk := superzk.Seed2Sk(&seed, 1)
+	tk, _ := superzk.Sk2Tk(&sk)
+	pk, _ := superzk.Tk2Pk(&tk)
 
-	if tk == pk {
+	if bytes.Compare(pk[:], tk[:]) == 0 {
 		t.FailNow()
 	}
 
-	r := cpt.Random()
-	pkr := keys.Addr2PKr(&pk, &r)
-	is_my_pkr := keys.IsMyPKr(&tk, &pkr)
+	r := c_type.RandUint256()
+	pkr := superzk.Pk2PKr(&pk, &r)
+	is_my_pkr := superzk.IsMyPKr(&tk, &pkr)
 	if !is_my_pkr {
 		t.FailNow()
 	}
 
-	seed1 := cpt.Random()
-	pk1 := keys.Seed2Addr(&seed1)
-	tk1 := keys.Seed2Tk(&seed1)
-	pkr1 := keys.Addr2PKr(&pk1, &r)
-	is_my_pkr = keys.IsMyPKr(&tk1, &pkr1)
+	seed1 := c_type.RandUint256()
+	tk1, _ := c_superzk.Seed2Tk(&seed1)
+	pk1, _ := c_superzk.Czero_Tk2PK(&tk1)
+	pkr1 := superzk.Pk2PKr(&pk1, &r)
+	is_my_pkr = superzk.IsMyPKr(&tk1, &pkr1)
 	if !is_my_pkr {
 		t.FailNow()
 	}
-	is_my_pkr_err := keys.IsMyPKr(&tk, &pkr1)
+	is_my_pkr_err := superzk.IsMyPKr(&tk, &pkr1)
 	if is_my_pkr_err {
 		t.FailNow()
 	}
 
-	h := cpt.Random()
-	sign, err := keys.SignPKr(&seed, &h, &pkr)
+	h := c_type.RandUint256()
+	sign, err := c_czero.SignPKrBySk(&sk, &h, &pkr)
 	if err != nil {
 		t.FailNow()
 	}
 
-	v_ok := keys.VerifyPKr(&h, &sign, &pkr)
+	v_ok := c_czero.VerifyPKr(&h, &sign, &pkr)
 	if !v_ok {
 		t.FailNow()
 	}
 
-	v_ok_err := keys.VerifyPKr(&h, &sign, &pkr1)
+	v_ok_err := c_czero.VerifyPKr(&h, &sign, &pkr1)
 	if v_ok_err {
 		t.FailNow()
 	}
 }
 
 func TestMain(m *testing.M) {
-	//cpt.ZeroInit("", cpt.NET_Dev)
-	cpt.ZeroInit_OnlyInOuts()
+	superzk.ZeroInit_OnlyInOuts()
 	m.Run()
 }
