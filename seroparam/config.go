@@ -67,3 +67,12 @@ func InitCurrentBlockNumber(number uint64) {
 func DefaultCurrentBlock() uint64 {
 	return currentBlockNumber
 }
+
+var is_offline = false
+
+func Init_Offline(offline bool) {
+	is_offline = offline
+}
+func Is_Offline() bool {
+	return is_offline
+}
