@@ -92,7 +92,7 @@ func VerifyPKr_P(data *c_type.Uint256, sign *c_type.Uint512, pkr *c_type.PKr) bo
 }
 
 func SignNil_P0(h *c_type.Uint256, sk *c_type.Uint512, pkr *c_type.PKr, root_cm *c_type.Uint256) (sign c_type.SignN, e error) {
-	ret := C.czero_sign_nil(
+	ret := C.czero_sign_nil_ex(
 		(*C.uchar)(unsafe.Pointer(&h[0])),
 		(*C.uchar)(unsafe.Pointer(&sk[0])),
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),
@@ -107,7 +107,7 @@ func SignNil_P0(h *c_type.Uint256, sk *c_type.Uint512, pkr *c_type.PKr, root_cm 
 }
 
 func VerifyNil_P0(h *c_type.Uint256, sign *c_type.SignN, pkr *c_type.PKr, root_cm *c_type.Uint256, nl *c_type.Uint256) (e error) {
-	ret := C.czero_verify_nil(
+	ret := C.czero_verify_nil_ex(
 		(*C.uchar)(unsafe.Pointer(&h[0])),
 		(*C.uchar)(unsafe.Pointer(&sign[0])),
 		(*C.uchar)(unsafe.Pointer(&pkr[0])),

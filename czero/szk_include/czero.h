@@ -66,7 +66,7 @@ extern int czero_gen_trace(
     unsigned char trace[32]
 );
 
-extern int czero_sign_nil(
+extern int czero_sign_nil_ex(
     //---in---
     const unsigned char hash[32],
     const unsigned char sk[SZK_SK_WIDTH],
@@ -76,7 +76,7 @@ extern int czero_sign_nil(
     unsigned char sign_ret[SZK_NSIGN_WIDTH]
 );
 
-extern int czero_verify_nil(
+extern int czero_verify_nil_ex(
     const unsigned char hash[32],
     const unsigned char sign[SZK_NSIGN_WIDTH],
     const unsigned char pkr[SZK_PKr_WIDTH],
